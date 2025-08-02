@@ -1,10 +1,11 @@
-import liff from "@line/liff";
-import { useLocation, useNavigate } from "react-router-dom";
+// import liff from "@line/liff";
+import { useNavigate } from "react-router-dom";
+// useLocation, 
 
 export const FeedsPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
+  // const location = useLocation();
+  // const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
   
   return (
     <div style={{ 
