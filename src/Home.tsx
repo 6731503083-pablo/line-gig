@@ -24,7 +24,7 @@ function Home() {
   const checkUserExists = async (userId: string) => {
     try {
       // Check if user exists as employer
-      const employerResponse = await fetch(`https://line-gig-api.vercel.app/employers?userId=${userId}`);
+      const employerResponse = await fetch(`https://line-gig-api.vercel.app/employers/${userId}`);
       if (employerResponse.ok) {
         const employers = await employerResponse.json();
         if (employers.length > 0) {
@@ -33,7 +33,7 @@ function Home() {
       }
 
       // Check if user exists as freelancer
-      const freelancerResponse = await fetch(`https://line-gig-api.vercel.app/freelancers?userId=${userId}`);
+      const freelancerResponse = await fetch(`https://line-gig-api.vercel.app/freelancers/${userId}`);
       if (freelancerResponse.ok) {
         const freelancers = await freelancerResponse.json();
         if (freelancers.length > 0) {
