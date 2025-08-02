@@ -26,8 +26,7 @@ export const BottomNav = ({ userType }: BottomNavProps) => {
   });
 
   // Determine active states
-  const isFeedsActive = currentPath === "/feeds";
-  const isOffersActive = currentPath === "/offers";
+  const isOffersActive = currentPath === "/offers" || currentPath === "/feeds";
   const isHistoryActive = currentPath === "/history";
   const isProfileActive = currentPath === "/profile";
 
@@ -47,17 +46,9 @@ export const BottomNav = ({ userType }: BottomNavProps) => {
       boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.1)",
       zIndex: 1000,
     }}>
-      {/* Feeds Tab */}
-      <div 
-        onClick={() => navigate("/feeds")}
-        style={getTabStyle(isFeedsActive)}
-      >
-        Feeds
-      </div>
-
       {/* Offers/Services Tab */}
       <div 
-        onClick={() => navigate("/offers")}
+        onClick={() => navigate("/feeds")}
         style={getTabStyle(isOffersActive)}
       >
         {userType === "employer" ? "Offers" : "Services"}

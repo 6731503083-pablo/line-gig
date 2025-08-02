@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { BottomNav } from './components/BottomNav';
 
 import './OfferPage.css';
 
@@ -12,6 +14,7 @@ type Offer = {
 const OfferPage: React.FC = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [expandedOfferId, setExpandedOfferId] = useState<number | null>(null);
+  const userType = localStorage.getItem("userType") as "employer" | "freelancer" | null;
 
   useEffect(() => {
     fetch('https://line-gig-api.vercel.app/offers')
@@ -63,6 +66,9 @@ const OfferPage: React.FC = () => {
           </div>
         );
       })}
+
+      {/* Bottom Navigation */}
+      <BottomNav userType={userType} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import liff from "@line/liff";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BottomNav } from "./components/BottomNav";
 
 interface Profile {
   displayName: string;
@@ -635,10 +636,14 @@ function ProfilePage() {
           opacity: 0.5,
           textAlign: "center",
           marginTop: "20px",
+          marginBottom: "80px", // Space for bottom navigation
         }}
       >
         User ID: {userProfile.profile.userId}
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav userType={userProfile.userType} />
     </div>
   );
 }
