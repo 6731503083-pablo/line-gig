@@ -9,7 +9,6 @@ export const FeedsPage = () => {
   
   return (
     <div style={{ 
-      padding: "20px", 
       fontFamily: "'Arial', sans-serif", 
       color: "white",
       minHeight: "100vh",
@@ -21,26 +20,23 @@ export const FeedsPage = () => {
         alignItems: "center",
         marginBottom: "30px" 
       }}>
-        <h1 style={{ margin: 0, fontSize: "24px" }}>LINE GIG Feeds</h1>
-        {/* <button
-          onClick={() => navigate("/profile")}
-          style={{
-            backgroundColor: "#06C755",
-            border: "none",
-            color: "white",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontFamily: "'Arial', sans-serif",
+        <h1 
+        style={{ 
+          margin: 0, 
+          fontSize: "24px" , 
+          fontStyle: "bold"
           }}
-        >
-          Profile
-        </button> */}
-      </div>
-      
-      
-      
-      <div 
+          >LINE GIG Feeds</h1>
+      </div> 
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "20px",
+        flexWrap: "wrap",
+        padding: "20px",
+      }}>
+        <div 
         onClick={() => navigate("/offers")}
         style={{
           backgroundColor: "#06C755",
@@ -53,6 +49,19 @@ export const FeedsPage = () => {
         }}
       >
         Offers Page
+      </div>
+      <div
+      onClick={() => navigate("/profile")}
+          style={{
+            backgroundColor: "#06C755",
+            border: "none",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontFamily: "'Arial', sans-serif",
+          }}
+      >Profile</div>
       </div>
     </div>
   );
