@@ -1,79 +1,77 @@
 import React, { Component } from 'react';
+
 import './OfferPage.css';
 
-interface OfferPageState {
-  expandedIndex: number | null;
-}
+type Offer = {
+  id: number;
+  name: string;
+  description: string;
+  offer_price: number;
+};
+
+type OfferPageState = {
+  offers: Offer[];
+  expandedOfferId: number | null;
+};
 
 class OfferPage extends Component<{}, OfferPageState> {
   state: OfferPageState = {
-    expandedIndex: 1, // Track which job is expanded
+    offers: [],
+    expandedOfferId: null,
   };
 
-  handleToggle = (id: number | null) => {
-    this.setState((prevState) => ({
-      expandedIndex: prevState.expandedIndex === id ? null : id,
+  componentDidMount() {
+
+    fetch('https://json-server--3000.local.webcontainer.io/comments') 
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ offers: data.offers });
+      })
+      .catch(error => console.error('Error fetching offers:', error));
+  }
+
+  handleToggle = (offerId: any) => {
+    this.setState(prevState => ({
+      expandedOfferId: prevState.expandedOfferId === offerId ? null : offerId
     }));
   };
 
-  handleAccept = () => {
-    alert("You have accepted the offer!");
-    // Add logic for accept
+  handleAccept = (offerId: any) => {
+    alert(`✅ Accepted offer with ID: ${offerId}`);
+    // You can add logic to send accept to backend
   };
 
-  handleDecline = () => {
-    alert("You have declined the offer.");
-    // Add logic for decline
+  handleDecline = (offerId: any) => {
+    alert(`❌ Declined offer with ID: ${offerId}`);
+    // You can add logic to send decline to backend
   };
 
   render() {
-    const jobs = [
-      {
-        id: 1,
-        title: 'React Native Budget App',
-        description: `We are seeking a React Native developer to build a cross-platform mobile app for a budgeting tool. You'll be responsible for implementing UI components, state management, and integration with backend APIs. Figma designs and API documentation will be provided.`,
-      },
-      {
-        id: 2,
-        title: 'Flutter Fitness App',
-        description: `Develop a fitness app using Flutter that tracks workouts and calories. You'll integrate with wearable APIs, work closely with our designer, and maintain clean, maintainable code.`,
-      },
-      {
-        id: 3,
-        title: 'React Native Budget App',
-        description: `We are seeking a React Native developer to build a cross-platform mobile app for a budgeting tool. You'll be responsible for implementing UI components, state management, and integration with backend APIs. Figma designs and API documentation will be provided.`,
-      },
-      {
-        id: 4,
-        title: 'Flutter Fitness App',
-        description: `Develop a fitness app using Flutter that tracks workouts and calories. You'll integrate with wearable APIs, work closely with our designer, and maintain clean, maintainable code.`,
-      },
-    ];
+    const { offers, expandedOfferId } = this.state;
 
     return (
-      <div className="job-list">
-        {jobs.map((job, id) => {
-          const isExpanded = this.state.expandedIndex === id;
-          const shortDesc = job.description.slice(0, 120);
+      <div className="offer-list">
+        {offers.map((offer) => {
+          const isExpanded = expandedOfferId === offer.id;
+          const shortDesc = offer.description.slice(0, 120);
 
           return (
-            <div className="offer-container" key={id}>
+            <div className="offer-container" key={offer.id}>
               <div className="offer-header">
-                <h2>{job.title}</h2>
+                <h2>{offer.name}</h2>
+                <p>💰 {offer.offer_price} THB</p>
               </div>
 
               <div className={`offer-description ${isExpanded ? 'expanded' : ''}`}>
-                <p>
-                  {isExpanded ? job.description : shortDesc + '...'}
-                </p>
-                <button className="toggle-btn" onClick={() => this.handleToggle(id)}>
+                <p>{isExpanded ? offer.description : shortDesc + '...'}</p>
+                <button className="toggle-btn" onClick={() => this.handleToggle(offer.id)}>
                   {isExpanded ? 'Show Less' : 'Read More'}
                 </button>
               </div>
 
               <div className="offer-buttons">
-                <button onClick={() => this.handleAccept()} className="btn-accept">Accept</button>
-                <button onClick={() => this.handleDecline()} className="btn-decline">Decline</button>
+                <button onClick={() => this.handleAccept(offer.id)} className="btn-accept">Accept</button>
+                <button onClick={() => this.handleDecline(offer.id)} className="btn-decline">Decline</button>
               </div>
             </div>
           );
