@@ -147,6 +147,7 @@ function ProfilePage() {
         fontFamily: "'Arial', sans-serif",
         color: "white",
         boxSizing: "border-box",
+        backgroundColor: "#606C755",
       }}
     >
       {/* Header */}
