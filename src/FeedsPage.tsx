@@ -13,16 +13,15 @@ export const FeedsPage = () => {
       color: "white",
       minHeight: "100vh",
       backgroundColor: "#06C755",
-
     }}>
       <div style={{ 
         display: "flex", 
-        justifyContent: "space-between", 
+        justifyContent: "center", 
         alignItems: "center",
         marginBottom: "30px" 
       }}>
         <h1 style={{ margin: 0, fontSize: "24px" }}>LINE GIG Feeds</h1>
-        <button
+        {/* <button
           onClick={() => navigate("/profile")}
           style={{
             backgroundColor: "#06C755",
@@ -35,31 +34,11 @@ export const FeedsPage = () => {
           }}
         >
           Profile
-        </button>
+        </button> */}
       </div>
       
-      <div style={{ marginBottom: "20px" }}>
-        <strong>User Type:</strong> {type}
-      </div>
       
-      <div 
-        onClick={() => {
-          liff.logout();
-          localStorage.removeItem("userType");
-          navigate("/");
-        }}
-        style={{
-          backgroundColor: "#ff4444",
-          color: "white",
-          padding: "10px 20px",
-          borderRadius: "5px",
-          cursor: "pointer",
-          display: "inline-block",
-          fontFamily: "'Arial', sans-serif",
-        }}
-      >
-        Log Out
-      </div>
+      
       <div 
         onClick={() => navigate("/offers")}
         style={{
