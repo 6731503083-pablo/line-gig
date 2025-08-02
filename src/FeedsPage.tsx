@@ -35,8 +35,7 @@ export const FeedsPage = () => {
     fetch('https://line-gig-api.vercel.app/offers')
       .then(res => res.json())
       .then(data => {
-        // setOffers(data);
-        setOffers([
+        data = [
           {
             id: "1",
             title: "Web Developer Needed",
@@ -48,7 +47,9 @@ export const FeedsPage = () => {
             status: "Open",
             createdAt: "2023-10-01"
           }
-        ])
+        ];
+        
+        setOffers(data);
       })
       .catch(error => console.error('Error fetching offers:', error));
   }, []);
