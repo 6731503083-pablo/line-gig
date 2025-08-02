@@ -2,15 +2,20 @@ import { useState, useEffect } from 'react';
 import { BottomNav } from './components/BottomNav';
 
 type Offer = {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   description: string;
-  offer_price: number;
+  budget: string;
+  employerId: number;
+  requirements: string;
+  deadline: string;
+  status: string;
+  createdAt: string;
 };
 
 const OfferPage: React.FC = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [expandedOfferId, setExpandedOfferId] = useState<number | null>(null);
+  const [expandedOfferId, setExpandedOfferId] = useState<string | null>(null);
   const userType = localStorage.getItem("userType") as "employer" | "freelancer" | null;
 
   useEffect(() => {
@@ -22,15 +27,15 @@ const OfferPage: React.FC = () => {
       .catch(error => console.error('Error fetching offers:', error));
   }, []);
 
-  const handleToggle = (offerId: number) => {
+  const handleToggle = (offerId: string) => {
     setExpandedOfferId(prevId => (prevId === offerId ? null : offerId));
   };
 
-  const handleAccept = (offerId: number) => {
+  const handleAccept = (offerId: string) => {
     alert(`✅ Accepted offer with ID: ${offerId}`);
   };
 
-  const handleDecline = (offerId: number) => {
+  const handleDecline = (offerId: string) => {
     alert(`❌ Declined offer with ID: ${offerId}`);
   };
 
@@ -61,9 +66,10 @@ const OfferPage: React.FC = () => {
           >
             <div>
               <h2 style={{ marginBottom: "10px", fontSize: "18px" }}>
-                {offer.name}
+                {offer.title}
               </h2>
-              <p>Fees - {offer.offer_price} THB</p>
+              <p>Budget: {offer.budget}</p>
+              <p className="offer-status">Status: {offer.status}</p>
             </div>
 
             <div
@@ -74,6 +80,21 @@ const OfferPage: React.FC = () => {
               }}
             >
               <p>{isExpanded ? offer.description : shortDesc + "..."}</p>
+              
+              {isExpanded && offer.requirements && (
+                <div className="offer-requirements">
+                  <h4>Requirements:</h4>
+                  <p>{offer.requirements}</p>
+                </div>
+              )}
+              
+              {isExpanded && offer.deadline && (
+                <div className="offer-deadline">
+                  <h4>Deadline:</h4>
+                  <p>{offer.deadline}</p>
+                </div>
+              )}
+              
               <button
                 onClick={() => handleToggle(offer.id)}
                 style={{
