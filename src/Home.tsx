@@ -10,6 +10,10 @@ function Home() {
   };
 
   useEffect(() => {
+    if (liff.isLoggedIn()) {
+      navigate("/feeds");
+      return;
+    }
     const userLineProfile = async () => {
       const data = await liff.getProfile();
       console.log("User Profile:", data);
