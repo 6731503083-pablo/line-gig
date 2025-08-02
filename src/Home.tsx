@@ -29,7 +29,7 @@ function Home() {
     const testAPI = async () => {
       try {
         setApiStatus('loading');
-        const response = await fetch("https://testing-json-server-vercel.vercel.app/employers");
+        const response = await fetch("https://line-gig-api.vercel.app/employers");
         const data = await response.json();
         console.log("API Test - Employers data:", data);
         setEmployersData(data);
