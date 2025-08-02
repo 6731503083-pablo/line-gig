@@ -1,13 +1,13 @@
 // import liff from "@line/liff";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-// useLocation, 
+
 
 export const FeedsPage = () => {
   const navigate = useNavigate();
   const [showBotDialog, setShowBotDialog] = useState(false);
-  // const location = useLocation();
-  // const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
+  const location = useLocation();
+  const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
   useEffect(() => {
     // Check if user has already followed the bot
@@ -176,7 +176,7 @@ export const FeedsPage = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        gap: "20px",
+        gap: "10px",
         padding: "15px 20px",
         backgroundColor: "#fff",
         borderTop: "1px solid #eee",
@@ -188,31 +188,58 @@ export const FeedsPage = () => {
         style={{
           backgroundColor: "#06C755",
           color: "white",
-          padding: "12px 24px",
+          padding: "12px 20px",
           borderRadius: "25px",
           cursor: "pointer",
           fontFamily: "'Arial', sans-serif",
           fontWeight: "600",
           flex: 1,
           textAlign: "center",
-          maxWidth: "150px",
+          maxWidth: type === "freelancer" ? "120px" : "150px",
+          fontSize: "14px",
         }}
       >
-        Offers
+        {
+          type === "employer" ? "Offers" : "Services"
+        }
       </div>
-      <div
-      onClick={() => navigate("/profile")}
+      
+      {/* History tab - only for freelancers */}
+      {type === "freelancer" && (
+        <div
+          onClick={() => navigate("/history")}
           style={{
             backgroundColor: "#06C755",
             color: "white",
-            padding: "12px 24px",
+            padding: "12px 20px",
             borderRadius: "25px",
             cursor: "pointer",
             fontFamily: "'Arial', sans-serif",
             fontWeight: "600",
             flex: 1,
             textAlign: "center",
-            maxWidth: "150px",
+            maxWidth: "120px",
+            fontSize: "14px",
+          }}
+        >
+          History
+        </div>
+      )}
+
+      <div
+      onClick={() => navigate("/profile")}
+          style={{
+            backgroundColor: "#06C755",
+            color: "white",
+            padding: "12px 20px",
+            borderRadius: "25px",
+            cursor: "pointer",
+            fontFamily: "'Arial', sans-serif",
+            fontWeight: "600",
+            flex: 1,
+            textAlign: "center",
+            maxWidth: type === "freelancer" ? "120px" : "150px",
+            fontSize: "14px",
           }}
       >Profile</div>
       </div>

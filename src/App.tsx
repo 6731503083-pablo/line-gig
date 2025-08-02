@@ -4,6 +4,7 @@ import LoginPage from "./LoginPage";
 import { FeedsPage } from "./FeedsPage";
 import OfferPage from "./OfferPage";
 import ProfilePage from "./ProfilePage";
+import { HistoryPage } from "./HistoryPage";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/feeds" element={<FeedsPage />} />
           <Route path="/offers" element={<OfferPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
+          <Route path="/history" element={<HistoryPage />} />
         </Routes>
       </Router>
     </div>
