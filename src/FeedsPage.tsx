@@ -296,17 +296,17 @@ export const FeedsPage = () => {
 
         {/* Available Offers */}
         <div style={{
-          backgroundColor: "#f8f9fa",
-          padding: "20px",
-          borderRadius: "15px",
-          border: "1px solid #e0e0e0",
+          // backgroundColor: "#f8f9fa",
+          // padding: "20px",
+          // borderRadius: "15px",
+          // border: "1px solid #e0e0e0",
         }}>
           <h3 style={{
             fontSize: "18px",
             fontWeight: "bold",
             color: "#333",
             marginBottom: "15px",
-            textAlign: "center",
+            // textAlign: "center",
           }}>
             {type === "employer" ? "Your Offers" : "Available Offers"}
           </h3>
@@ -335,7 +335,8 @@ export const FeedsPage = () => {
                   >
                     <div>
                       <h2 style={{ 
-                        marginBottom: "10px", 
+                        marginBottom: "10px",
+                        marginTop: 0, 
                         fontSize: "18px",
                         color: "#06C755"
                       }}>
@@ -350,7 +351,7 @@ export const FeedsPage = () => {
                       </p>
                       <p style={{ 
                         margin: "5px 0",
-                        fontSize: "12px",
+                        fontSize: "14px",
                         color: "#666"
                       }}>
                         Status: {offer.status}
@@ -366,33 +367,33 @@ export const FeedsPage = () => {
                       <p>{isExpanded ? offer.description : shortDesc + "..."}</p>
                       
                       {isExpanded && offer.requirements && (
-                        <div style={{ marginTop: "15px" }}>
-                          <h4 style={{ 
+                        <div style={{ marginTop: "15px"}}>
+                          {/* <h4 style={{ 
                             fontSize: "14px",
                             fontWeight: "bold",
                             color: "#333",
-                            marginBottom: "5px"
+                            margin: 
                           }}>
                             Requirements:
-                          </h4>
-                          <p style={{ fontSize: "14px", color: "#666" }}>
-                            {offer.requirements}
+                          </h4> */}
+                          <p style={{ fontSize: "14px", color: "#333", fontWeight: "bold" }}>
+                            Requirements: {offer.requirements}
                           </p>
                         </div>
                       )}
                       
                       {isExpanded && offer.deadline && (
                         <div style={{ marginTop: "10px" }}>
-                          <h4 style={{ 
+                          {/* <h4 style={{ 
                             fontSize: "14px",
                             fontWeight: "bold",
                             color: "#333",
                             marginBottom: "5px"
                           }}>
                             Deadline:
-                          </h4>
-                          <p style={{ fontSize: "14px", color: "#666" }}>
-                            {offer.deadline}
+                          </h4> */}
+                          <p style={{ fontSize: "14px", color: "#333", fontWeight: "bold" }}>
+                            Deadline: {offer.deadline}
                           </p>
                         </div>
                       )}
@@ -406,7 +407,6 @@ export const FeedsPage = () => {
                           cursor: "pointer",
                           fontSize: "14px",
                           padding: "5px 0",
-                          marginTop: "10px",
                           fontWeight: "600",
                         }}
                       >

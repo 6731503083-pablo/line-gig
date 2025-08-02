@@ -65,7 +65,7 @@ const OfferPage: React.FC = () => {
             }}
           >
             <div>
-              <h2 style={{ marginBottom: "10px", fontSize: "18px" }}>
+              <h2 style={{ marginBottom: "10px", fontSize: "18px", marginTop: 0 }}>
                 {offer.title}
               </h2>
               <p>Budget: {offer.budget}</p>
