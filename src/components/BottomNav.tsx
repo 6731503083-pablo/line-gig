@@ -51,7 +51,7 @@ export const BottomNav = ({ userType }: BottomNavProps) => {
         onClick={() => navigate("/feeds")}
         style={getTabStyle(isOffersActive)}
       >
-        {userType === "employer" ? "Offers" : "Services"}
+        {userType === "employer" ? "Services" : "Offers"}
       </div>
       
       {/* History tab - only for freelancers */}
