@@ -60,6 +60,20 @@ export const FeedsPage = () => {
       >
         Log Out
       </div>
+      <div 
+        onClick={() => navigate("/offers")}
+        style={{
+          backgroundColor: "#06C755",
+          color: "white",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          cursor: "pointer",
+          display: "inline-block",
+          fontFamily: "'Arial', sans-serif",
+        }}
+      >
+        Offers Page
+      </div>
     </div>
   );
 };
