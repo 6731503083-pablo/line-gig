@@ -3,10 +3,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { BottomNav } from "./components/BottomNav";
 
+type Offer = {
+  id: string;
+  title: string;
+  description: string;
+  budget: string;
+  employerId: number;
+  requirements: string;
+  deadline: string;
+  status: string;
+  createdAt: string;
+};
+
 
 export const FeedsPage = () => {
   const navigate = useNavigate();
   const [showBotDialog, setShowBotDialog] = useState(false);
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [expandedOfferId, setExpandedOfferId] = useState<string | null>(null);
   const location = useLocation();
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
@@ -16,6 +30,14 @@ export const FeedsPage = () => {
     if (!hasFollowedBot) {
       setShowBotDialog(true);
     }
+
+    // Fetch offers from API
+    fetch('https://line-gig-api.vercel.app/offers')
+      .then(res => res.json())
+      .then(data => {
+        setOffers(data);
+      })
+      .catch(error => console.error('Error fetching offers:', error));
   }, []);
 
   const handleFollowBot = () => {
@@ -27,6 +49,20 @@ export const FeedsPage = () => {
     // Save that user has followed the bot
     localStorage.setItem("hasFollowedBot", "true");
     setShowBotDialog(false);
+  };
+
+  const handleToggle = (offerId: string) => {
+    setExpandedOfferId(prevId => (prevId === offerId ? null : offerId));
+  };
+
+  const handleAccept = (offerId: string) => {
+    alert(`✅ Accepted offer with ID: ${offerId}`);
+    // You can add logic to send accept to backend
+  };
+
+  const handleDecline = (offerId: string) => {
+    alert(`❌ Declined offer with ID: ${offerId}`);
+    // You can add logic to send decline to backend
   };
   
   return (
@@ -188,7 +224,7 @@ export const FeedsPage = () => {
               color: "#666",
               marginBottom: "20px",
             }}>
-              Post your job offers here and find the right candidates for your projects.
+              Post your offers here and find the right candidates for your projects.
             </div>
             <button
               onClick={() => navigate("/create-job")}
@@ -211,29 +247,12 @@ export const FeedsPage = () => {
                 e.currentTarget.style.backgroundColor = "#06C755";
               }}
             >
-              Create Job Posting
+              Create Offer
             </button>
           </div>
         )}
         
-        {type == "freelancer" && (
-          <div style={{
-            backgroundColor: "#f8f9fa",
-            padding: "25px",
-            borderRadius: "15px",
-            marginBottom: "20px",
-            border: "2px solid #06C755",
-            boxShadow: "0 4px 12px rgba(6, 199, 85, 0.1)",
-          }}>
-            <div style={{
-              fontSize: "20px",
-              fontWeight: "bold",
-              color: "#06C755",
-              marginBottom: "15px",
-              textAlign: "center",
-            }}>
-              Find Your Next Gig
-            </div>
+        {type == "freelancer" && (     
             <div style={{
               position: "relative",
               marginBottom: "15px",
@@ -271,12 +290,11 @@ export const FeedsPage = () => {
               }}>
                 🔍
               </div>
-            </div>
-            
-          </div>
+            </div>   
+
         )}
 
-        {/* Recent Activity or Job Listings */}
+        {/* Available Offers */}
         <div style={{
           backgroundColor: "#f8f9fa",
           padding: "20px",
@@ -290,16 +308,216 @@ export const FeedsPage = () => {
             marginBottom: "15px",
             textAlign: "center",
           }}>
-            {type === "employer" ? "Recent Job Postings" : "Available Jobs"}
+            {type === "employer" ? "Your Offers" : "Available Offers"}
           </h3>
-          <div style={{
-            textAlign: "center",
-            color: "#666",
-            fontSize: "16px",
-            fontStyle: "italic",
-          }}>
-            No {type === "employer" ? "postings" : "jobs"} available yet.
-          </div>
+          
+          {offers.length > 0 ? (
+            <div style={{
+              maxHeight: "60vh",
+              overflowY: "auto",
+              marginBottom: "20px",
+            }}>
+              {offers.map((offer) => {
+                const isExpanded = expandedOfferId === offer.id;
+                const shortDesc = offer.description.slice(0, 120);
+
+                return (
+                  <div
+                    key={offer.id}
+                    style={{
+                      background: "#fff",
+                      border: "1px solid #ddd",
+                      borderRadius: "12px",
+                      padding: "20px",
+                      marginBottom: "15px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    <div>
+                      <h2 style={{ 
+                        marginBottom: "10px", 
+                        fontSize: "18px",
+                        color: "#06C755"
+                      }}>
+                        {offer.title}
+                      </h2>
+                      <p style={{ 
+                        margin: "5px 0",
+                        fontSize: "14px",
+                        fontWeight: "bold"
+                      }}>
+                        Budget: {offer.budget}
+                      </p>
+                      <p style={{ 
+                        margin: "5px 0",
+                        fontSize: "12px",
+                        color: "#666"
+                      }}>
+                        Status: {offer.status}
+                      </p>
+                    </div>
+
+                    <div style={{
+                      fontSize: "15px",
+                      lineHeight: 1.5,
+                      color: "#444",
+                      margin: "15px 0",
+                    }}>
+                      <p>{isExpanded ? offer.description : shortDesc + "..."}</p>
+                      
+                      {isExpanded && offer.requirements && (
+                        <div style={{ marginTop: "15px" }}>
+                          <h4 style={{ 
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#333",
+                            marginBottom: "5px"
+                          }}>
+                            Requirements:
+                          </h4>
+                          <p style={{ fontSize: "14px", color: "#666" }}>
+                            {offer.requirements}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {isExpanded && offer.deadline && (
+                        <div style={{ marginTop: "10px" }}>
+                          <h4 style={{ 
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#333",
+                            marginBottom: "5px"
+                          }}>
+                            Deadline:
+                          </h4>
+                          <p style={{ fontSize: "14px", color: "#666" }}>
+                            {offer.deadline}
+                          </p>
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => handleToggle(offer.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#06C755",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "5px 0",
+                          marginTop: "10px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {isExpanded ? "Show Less" : "Read More"}
+                      </button>
+                    </div>
+
+                    {/* Action buttons - only show for freelancers */}
+                    {type === "freelancer" && (
+                      <div style={{
+                        marginTop: "15px",
+                        display: "flex",
+                        gap: "15px",
+                        justifyContent: "center",
+                      }}>
+                        <button
+                          onClick={() => handleAccept(offer.id)}
+                          style={{
+                            padding: "10px 20px",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            color: "white",
+                            backgroundColor: "#06C755",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            transition: "background-color 0.3s ease",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#05a847";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = "#06C755";
+                          }}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => handleDecline(offer.id)}
+                          style={{
+                            padding: "10px 20px",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            color: "white",
+                            backgroundColor: "#dc3545",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            transition: "background-color 0.3s ease",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#c82333";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = "#dc3545";
+                          }}
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* For employers, show a different message */}
+                    {type === "employer" && (
+                      <div style={{
+                        marginTop: "15px",
+                        padding: "10px",
+                        backgroundColor: "#f8f9fa",
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        fontSize: "14px",
+                        color: "#666",
+                        fontStyle: "italic",
+                      }}>
+                        This is one of your posted offers
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{
+              textAlign: "center",
+              color: "#666",
+              fontSize: "16px",
+              fontStyle: "italic",
+              padding: "40px 20px",
+            }}>
+              No {type === "employer" ? "offers" : "offers"} available yet.
+              {type === "employer" && (
+                <div style={{ marginTop: "15px" }}>
+                  <button
+                    onClick={() => navigate("/create-job")}
+                    style={{
+                      backgroundColor: "#06C755",
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: "20px",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      fontFamily: "'Arial', sans-serif",
+                    }}
+                  >
+                    Create Your First Offer
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
