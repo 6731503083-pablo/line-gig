@@ -34,26 +34,29 @@ function Home() {
     <div
       style={{
         width: "100%",
-        height: "90vh",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         color: "white",
-        fontSize: "24px",
-        padding: "40px 20px",
+        padding: "5vw",
+        gap: "8vh",
+        boxSizing: "border-box",
       }}
     >
       <div
         style={{
           backgroundColor: "#06C755",
-          fontSize: "36px",
+          fontSize: "clamp(24px, 8vw, 48px)",
           fontWeight: "bold",
           width: "100%",
+          maxWidth: "400px",
           textAlign: "center",
-          padding: "20px 0",
-          borderRadius: "5px",
+          padding: "4vw 2vw",
+          borderRadius: "12px",
           fontFamily: "'Arial', sans-serif",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
       >
         LINE GIG
@@ -62,43 +65,62 @@ function Home() {
       <div
         style={{
           display: "flex",
-          gap: "20px",
+          flexDirection: "column",
+          gap: "4vw",
           textAlign: "center",
-          fontSize: "18px",
+          fontSize: "clamp(14px, 4vw, 18px)",
+          width: "100%",
+          maxWidth: "400px",
         }}
       >
         <div
           style={{
             backgroundColor: "#06C755",
-            padding: "15px 20px",
-            borderRadius: "5px",
+            padding: "4vw 6vw",
+            borderRadius: "12px",
             cursor: "pointer",
-            transition: "background-color 0.3s ease",
+            transition: "all 0.3s ease",
             fontFamily: "'Arial', sans-serif",
+            fontWeight: "600",
+            width: "100%",
+            boxSizing: "border-box",
+            border: "2px solid transparent",
+            minHeight: "48px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={() => handleButtonClick("employer")}
           onMouseOver={(e) => {
             e.currentTarget.style.backgroundColor = "white";
             e.currentTarget.style.color = "#06C755";
-            e.currentTarget.style.border = "1px solid #06C755";
+            e.currentTarget.style.border = "2px solid #06C755";
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = "#06C755";
             e.currentTarget.style.color = "white";
-            e.currentTarget.style.border = "1px solid white";
+            e.currentTarget.style.border = "2px solid transparent";
           }}
         >
           Create Job Offers
         </div>
         <div
           style={{
-            border: "1px solid #06C755",
-            padding: "15px 20px",
-            borderRadius: "5px",
+            border: "2px solid #06C755",
+            padding: "4vw 6vw",
+            borderRadius: "12px",
             cursor: "pointer",
-            transition: "background-color 0.3s ease",
+            transition: "all 0.3s ease",
             fontFamily: "'Arial', sans-serif",
+            fontWeight: "600",
             color: "#06C755",
+            backgroundColor: "transparent",
+            width: "100%",
+            boxSizing: "border-box",
+            minHeight: "48px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onClick={() => handleButtonClick("freelancer")}
           onMouseOver={(e) => {
