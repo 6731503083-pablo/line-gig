@@ -6,11 +6,16 @@ function Home() {
   const navigate = useNavigate();
 
   const handleButtonClick = (type: "employer" | "freelancer") => {
-    navigate("/login", { state: { type } });
+    if (liff.isLoggedIn() && liff.isInClient()) {
+      localStorage.setItem("userType", type);
+      navigate("/feeds");
+    } else {
+      navigate("/login", { state: { type } });
+    }
   };
 
   useEffect(() => {
-    if (liff.isLoggedIn()) {
+    if (liff.isLoggedIn() && !liff.isInClient()) {
       navigate("/feeds");
       return;
     }
