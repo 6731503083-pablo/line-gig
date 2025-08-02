@@ -6,11 +6,16 @@ function Home() {
   const navigate = useNavigate();
 
   const handleButtonClick = (type: "employer" | "freelancer") => {
-    navigate("/login", { state: { type } });
+    if (liff.isLoggedIn() && liff.isInClient()) {
+      localStorage.setItem("userType", type);
+      navigate("/feeds");
+    } else {
+      navigate("/login", { state: { type } });
+    }
   };
 
   useEffect(() => {
-    if (liff.isLoggedIn()) {
+    if (liff.isLoggedIn() && !liff.isInClient()) {
       navigate("/feeds");
       return;
     }
@@ -21,6 +26,8 @@ function Home() {
     userLineProfile().catch((error) => {
       console.error("Failed to get LINE profile:", error);
     });
+
+  
   }, [navigate]);
 
   return (
@@ -37,20 +44,20 @@ function Home() {
         padding: "40px 20px",
       }}
     >
-      <h1
+      <div
         style={{
-          color: "#06C755",
+          backgroundColor: "#06C755",
           fontSize: "36px",
           fontWeight: "bold",
+          width: "100%",
           textAlign: "center",
-          textTransform: "uppercase",
-          letterSpacing: "2px",
-          margin: "0",
+          padding: "20px 0",
+          borderRadius: "5px",
           fontFamily: "'Arial', sans-serif",
         }}
       >
-        {liff.isLoggedIn() ? "Welcome Back!" : "Welcome to LINE GIG"}
-      </h1>
+        LINE GIG
+      </div>
 
       <div
         style={{

@@ -3,6 +3,7 @@ import Home from "./Home";
 import LoginPage from "./LoginPage";
 import { FeedsPage } from "./FeedsPage";
 import OfferPage from "./components/OfferPage";
+import ProfilePage from "./ProfilePage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/feeds" element={<FeedsPage />} />
           <Route path="/offers" element={<OfferPage />} />
 
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Router>
     </div>
