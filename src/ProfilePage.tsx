@@ -45,6 +45,7 @@ function ProfilePage() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isTogglingRole, setIsTogglingRole] = useState(false);
   const [editData, setEditData] = useState({
     bio: "",
     skills: "",
@@ -102,6 +103,70 @@ function ProfilePage() {
       }
     } catch (error) {
       console.error("Error updating user data:", error);
+      return null;
+    }
+  };
+
+  // Delete current user profile
+  const deleteCurrentUser = async () => {
+    try {
+      const endpoint = userProfile.userType === "employer" 
+        ? `https://line-gig-api.vercel.app/api/employers/${userProfile.dbId}`
+        : `https://line-gig-api.vercel.app/api/freelancers/${userProfile.dbId}`;
+      
+      const response = await fetch(endpoint, {
+        method: 'DELETE',
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return false;
+    }
+  };
+
+  // Create new user with toggled role
+  const createToggledUser = async (newUserType: "employer" | "freelancer") => {
+    try {
+      const endpoint = newUserType === "employer" 
+        ? "https://line-gig-api.vercel.app/api/employers"
+        : "https://line-gig-api.vercel.app/api/freelancers";
+
+      const userData = newUserType === "employer" 
+        ? {
+            lineId: userProfile.profile?.userId,
+            bio: userProfile.bio || "New employer",
+            location: userProfile.location || "Not specified",
+            company: "Not specified",
+            industry: "Not specified",
+            budgetRange: "Not specified",
+            projectTypes: "Not specified",
+          }
+        : {
+            lineId: userProfile.profile?.userId,
+            bio: userProfile.bio || "New freelancer",
+            location: userProfile.location || "Not specified",
+            skills: userProfile.skills.length > 0 ? userProfile.skills : ["General"],
+            experience: userProfile.experience || "Entry level",
+            hourlyRate: userProfile.hourlyRate || "Negotiable",
+            availability: userProfile.availability || "Available",
+          };
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const newUser = await response.json();
+        return newUser;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating new user:", error);
       return null;
     }
   };
@@ -259,6 +324,81 @@ function ProfilePage() {
     setIsEditing(false);
   };
 
+  const handleToggleRole = async () => {
+    if (!userProfile.dbId || !userProfile.userType) {
+      alert("Unable to switch role. Please try again.");
+      return;
+    }
+
+    const newUserType = userProfile.userType === "employer" ? "freelancer" : "employer";
+    const confirmMessage = `Are you sure you want to switch from ${userProfile.userType} to ${newUserType}? Your current profile data will be preserved where possible.`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsTogglingRole(true);
+
+    try {
+      // Delete current user profile
+      const deleteSuccess = await deleteCurrentUser();
+      if (!deleteSuccess) {
+        alert("Failed to delete current profile. Please try again.");
+        setIsTogglingRole(false);
+        return;
+      }
+
+      // Create new user with toggled role
+      const newUser = await createToggledUser(newUserType);
+      if (!newUser) {
+        alert("Failed to create new profile. Please try again.");
+        setIsTogglingRole(false);
+        return;
+      }
+
+      // Update localStorage and state
+      localStorage.setItem("userType", newUserType);
+      
+      // Update the user profile state with new data
+      setUserProfile(prev => ({
+        ...prev,
+        userType: newUserType,
+        dbId: newUser.id,
+        bio: newUser.bio || "",
+        skills: newUser.skills || [],
+        experience: newUser.experience || "",
+        location: newUser.location || "",
+        hourlyRate: newUser.hourlyRate || "",
+        availability: newUser.availability || "",
+        company: newUser.company || "",
+        industry: newUser.industry || "",
+        budgetRange: newUser.budgetRange || "",
+        projectTypes: newUser.projectTypes || "",
+      }));
+
+      // Update edit data as well
+      setEditData({
+        bio: newUser.bio || "",
+        skills: Array.isArray(newUser.skills) ? newUser.skills.join(", ") : (newUser.skills || ""),
+        experience: newUser.experience || "",
+        location: newUser.location || "",
+        hourlyRate: newUser.hourlyRate || "",
+        availability: newUser.availability || "",
+        company: newUser.company || "",
+        industry: newUser.industry || "",
+        budgetRange: newUser.budgetRange || "",
+        projectTypes: newUser.projectTypes || "",
+      });
+
+      alert(`Successfully switched to ${newUserType}!`);
+    } catch (error) {
+      console.error("Error toggling role:", error);
+      alert("Failed to switch role. Please try again.");
+    } finally {
+      setIsTogglingRole(false);
+    }
+  };
+
   const handleLogout = () => {
     liff.logout();
     localStorage.removeItem("userType");
@@ -326,20 +466,51 @@ function ProfilePage() {
           Profile
         </h1>
         
-        <button
-          onClick={handleLogout}
-          style={{
-            backgroundColor: "#ff4444",
-            border: "none",
-            color: "white",
-            padding: "8px 16px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontFamily: "'Arial', sans-serif",
-          }}
-        >
-          Logout
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+          <div style={{
+            fontSize: "12px",
+            opacity: 0.8,
+            textAlign: "center",
+          }}>
+            Switch Role
+          </div>
+          <button
+            onClick={handleToggleRole}
+            disabled={isTogglingRole}
+            style={{
+              backgroundColor: isTogglingRole ? "#ccc" : "#fff",
+              border: "2px solid #fff",
+              color: isTogglingRole ? "#666" : "#06C755",
+              padding: "6px 12px",
+              borderRadius: "20px",
+              cursor: isTogglingRole ? "not-allowed" : "pointer",
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "12px",
+              fontWeight: "bold",
+              transition: "all 0.3s ease",
+              minWidth: "80px",
+            }}
+            onMouseOver={(e) => {
+              if (!isTogglingRole) {
+                e.currentTarget.style.backgroundColor = "#06C755";
+                e.currentTarget.style.color = "#fff";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isTogglingRole) {
+                e.currentTarget.style.backgroundColor = "#fff";
+                e.currentTarget.style.color = "#06C755";
+              }
+            }}
+          >
+            {isTogglingRole 
+              ? "Switching..." 
+              : userProfile.userType === "employer" 
+                ? "→ Freelancer" 
+                : "→ Employer"
+            }
+          </button>
+        </div>
       </div>
 
       {/* Profile Card */}
@@ -406,56 +577,81 @@ function ProfilePage() {
           </div>
         )}
 
-        {/* Edit Button */}
-        <div style={{ textAlign: "right", marginBottom: "20px" }}>
-          {!isEditing ? (
-            <button
-              onClick={() => setIsEditing(true)}
-              style={{
-                backgroundColor: "#fff",
-                border: "none",
-                color: "#06C755",
-                padding: "10px 20px",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontFamily: "'Arial', sans-serif",
-              }}
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+        {/* Edit Button and Logout */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          marginBottom: "20px",
+          flexWrap: "wrap",
+          gap: "10px"
+        }}>
+          <button
+            onClick={handleLogout}
+            style={{
+              backgroundColor: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.5)",
+              color: "rgba(255, 255, 255, 0.8)",
+              padding: "8px 16px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "14px",
+            }}
+          >
+            Logout
+          </button>
+          
+          <div>
+            {!isEditing ? (
               <button
-                onClick={handleCancel}
+                onClick={() => setIsEditing(true)}
                 style={{
-                  backgroundColor: "transparent",
-                  border: "1px solid #666",
-                  color: "#666",
+                  backgroundColor: "#fff",
+                  border: "none",
+                  color: "#06C755",
                   padding: "10px 20px",
                   borderRadius: "5px",
                   cursor: "pointer",
                   fontFamily: "'Arial', sans-serif",
                 }}
               >
-                Cancel
+                Edit Profile
               </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                style={{
-                  backgroundColor: isSaving ? "#ccc" : "#06C755",
-                  border: "none",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "5px",
-                  cursor: isSaving ? "not-allowed" : "pointer",
-                  fontFamily: "'Arial', sans-serif",
-                }}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </button>
-            </div>
-          )}
+            ) : (
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  onClick={handleCancel}
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "1px solid #666",
+                    color: "#666",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    fontFamily: "'Arial', sans-serif",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  style={{
+                    backgroundColor: isSaving ? "#ccc" : "#06C755",
+                    border: "none",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: isSaving ? "not-allowed" : "pointer",
+                    fontFamily: "'Arial', sans-serif",
+                  }}
+                >
+                  {isSaving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Profile Fields */}
