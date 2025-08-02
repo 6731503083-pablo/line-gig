@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import LoginPage from "./LoginPage";
 import { FeedsPage } from "./FeedsPage";
-import OfferPage from "./components/OfferPage";
+import OfferPage from "./OfferPage";
 import ProfilePage from "./ProfilePage";
 
 function App() {
@@ -18,7 +18,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/feeds" element={<FeedsPage />} />
           <Route path="/offers" element={<OfferPage />} />
-
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Router>
