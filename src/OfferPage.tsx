@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-
 import { BottomNav } from './components/BottomNav';
-
-import './OfferPage.css';
 
 type Offer = {
   id: number;
@@ -31,37 +28,102 @@ const OfferPage: React.FC = () => {
 
   const handleAccept = (offerId: number) => {
     alert(`✅ Accepted offer with ID: ${offerId}`);
-    // You can add logic to send accept to backend
   };
 
   const handleDecline = (offerId: number) => {
     alert(`❌ Declined offer with ID: ${offerId}`);
-    // You can add logic to send decline to backend
   };
 
   return (
-    <div className="offer-list">
+    <div
+      style={{
+        maxHeight: "85vh",
+        overflowY: "auto",
+        padding: "20px",
+        background: "#f9f9f9",
+      }}
+    >
       {offers.map((offer) => {
         const isExpanded = expandedOfferId === offer.id;
         const shortDesc = offer.description.slice(0, 120);
 
         return (
-          <div className="offer-container" key={offer.id}>
-            <div className="offer-header">
-              <h2>{offer.name}</h2>
+          <div
+            key={offer.id}
+            style={{
+              background: "#fff",
+              border: "1px solid #ddd",
+              borderRadius: "12px",
+              padding: "20px",
+              marginBottom: "10px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div>
+              <h2 style={{ marginBottom: "10px", fontSize: "18px" }}>
+                {offer.name}
+              </h2>
               <p>Fees - {offer.offer_price} THB</p>
             </div>
 
-            <div className={`offer-description ${isExpanded ? 'expanded' : ''}`}>
-              <p>{isExpanded ? offer.description : shortDesc + '...'}</p>
-              <button className="toggle-btn" onClick={() => handleToggle(offer.id)}>
-                {isExpanded ? 'Show Less' : 'Read More'}
+            <div
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.5,
+                color: "#444",
+              }}
+            >
+              <p>{isExpanded ? offer.description : shortDesc + "..."}</p>
+              <button
+                onClick={() => handleToggle(offer.id)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#007bff",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  padding: 0,
+                }}
+              >
+                {isExpanded ? "Show Less" : "Read More"}
               </button>
             </div>
 
-            <div className="offer-buttons">
-              <button onClick={() => handleAccept(offer.id)} className="btn-accept">Accept</button>
-              <button onClick={() => handleDecline(offer.id)} className="btn-decline">Decline</button>
+            <div
+              style={{
+                marginTop: "15px",
+                display: "flex",
+                gap: "15px",
+              }}
+            >
+              <button
+                onClick={() => handleAccept(offer.id)}
+                style={{
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "#023d1b",
+                  cursor: "pointer",
+                }}
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => handleDecline(offer.id)}
+                style={{
+                  padding: "10px 20px",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "#dc3545",
+                  cursor: "pointer",
+                }}
+              >
+                Decline
+              </button>
             </div>
           </div>
         );
