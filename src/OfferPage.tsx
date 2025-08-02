@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+
 import { BottomNav } from './components/BottomNav';
 
 import './OfferPage.css';
