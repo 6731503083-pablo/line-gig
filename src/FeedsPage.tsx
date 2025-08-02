@@ -17,7 +17,8 @@ export const FeedsPage = () => {
       backgroundColor: "#06C755",
       display: "flex",
       justifyContent: "space-between",
-      alignItems: 'center'
+      alignItems: 'center',
+      flexDirection: "column",
     }}>
       <div style={{ 
         display: "flex", 
