@@ -49,7 +49,7 @@ const OfferPage: React.FC = () => {
           <div className="offer-container" key={offer.id}>
             <div className="offer-header">
               <h2>{offer.name}</h2>
-              <p>💰 {offer.offer_price} THB</p>
+              <p>Fees - {offer.offer_price} THB</p>
             </div>
 
             <div className={`offer-description ${isExpanded ? 'expanded' : ''}`}>

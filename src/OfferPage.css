@@ -16,7 +16,7 @@
 
 .offer-header h2 {
   margin-bottom: 10px;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .offer-description {
@@ -32,7 +32,6 @@
   cursor: pointer;
   font-size: 14px;
   padding: 0;
-  margin-top: 8px;
 }
 
 .offer-buttons {
@@ -51,7 +50,7 @@
 }
 
 .btn-accept {
-  background-color: #28a745;
+  background-color: #023d1b;
 }
 
 .btn-decline {
