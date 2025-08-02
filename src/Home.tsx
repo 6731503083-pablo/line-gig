@@ -39,20 +39,20 @@ function Home() {
         padding: "40px 20px",
       }}
     >
-      <h1
+      <div
         style={{
-          color: "#06C755",
+          backgroundColor: "#06C755",
           fontSize: "36px",
           fontWeight: "bold",
+          width: "100%",
           textAlign: "center",
-          textTransform: "uppercase",
-          letterSpacing: "2px",
-          margin: "0",
+          padding: "20px 0",
+          borderRadius: "5px",
           fontFamily: "'Arial', sans-serif",
         }}
       >
-        {liff.isLoggedIn() ? "Welcome Back!" : "Welcome to LINE GIG"}
-      </h1>
+        LINE GIG
+      </div>
 
       <div
         style={{
