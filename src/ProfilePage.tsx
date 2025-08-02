@@ -317,7 +317,7 @@ function ProfilePage() {
 
         {/* Profile Fields */}
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Bio */}
+          {/* Bio - Common for both types */}
           <div>
             <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
               Bio:
@@ -346,80 +346,7 @@ function ProfilePage() {
             )}
           </div>
 
-          {/* Skills */}
-          <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
-              Skills:
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editData.skills}
-                onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  fontFamily: "'Arial', sans-serif",
-                  boxSizing: "border-box",
-                }}
-                placeholder="React, JavaScript, Design, etc. (comma separated)"
-              />
-            ) : (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {userProfile.skills.length > 0 ? (
-                  userProfile.skills.map((skill, index) => (
-                    <span
-                      key={index}
-                      style={{
-                        backgroundColor: "#06C755",
-                        color: "white",
-                        padding: "4px 8px",
-                        borderRadius: "12px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {skill}
-                    </span>
-                  ))
-                ) : (
-                  <span style={{ opacity: 0.7 }}>No skills added yet.</span>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Experience */}
-          <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
-              Experience:
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editData.experience}
-                onChange={(e) => setEditData({ ...editData, experience: e.target.value })}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  fontFamily: "'Arial', sans-serif",
-                  boxSizing: "border-box",
-                }}
-                placeholder="5+ years, Beginner, Expert, etc."
-              />
-            ) : (
-              <div style={{ fontSize: "16px" }}>
-                {userProfile.experience || "No experience info added."}
-              </div>
-            )}
-          </div>
-
-          {/* Location */}
+          {/* Location - Common for both types */}
           <div>
             <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
               Location:
@@ -447,63 +374,257 @@ function ProfilePage() {
             )}
           </div>
 
-          {/* Hourly Rate (for freelancers) */}
+          {/* Freelancer-specific fields */}
           {userProfile.userType === "freelancer" && (
-            <div>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
-                Hourly Rate:
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editData.hourlyRate}
-                  onChange={(e) => setEditData({ ...editData, hourlyRate: e.target.value })}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc",
-                    fontSize: "16px",
-                    fontFamily: "'Arial', sans-serif",
-                    boxSizing: "border-box",
-                  }}
-                  placeholder="$50/hour, ¥5000/hour, etc."
-                />
-              ) : (
-                <div style={{ fontSize: "16px" }}>
-                  {userProfile.hourlyRate || "No rate specified."}
-                </div>
-              )}
-            </div>
+            <>
+              {/* Skills */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Skills:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.skills}
+                    onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="React, JavaScript, Design, etc. (comma separated)"
+                  />
+                ) : (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {userProfile.skills.length > 0 ? (
+                      userProfile.skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            backgroundColor: "#fff",
+                            color: "#06C755",
+                            padding: "4px 8px",
+                            borderRadius: "12px",
+                            fontSize: "14px",
+                            border: "1px solid #06C755",
+                          }}
+                        >
+                          {skill}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ opacity: 0.7 }}>No skills added yet.</span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Experience */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Experience:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.experience}
+                    onChange={(e) => setEditData({ ...editData, experience: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="5+ years, Beginner, Expert, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.experience || "No experience info added."}
+                  </div>
+                )}
+              </div>
+
+              {/* Hourly Rate */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Hourly Rate:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.hourlyRate}
+                    onChange={(e) => setEditData({ ...editData, hourlyRate: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="$50/hour, ¥5000/hour, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.hourlyRate || "No rate specified."}
+                  </div>
+                )}
+              </div>
+
+              {/* Availability */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Availability:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.availability}
+                    onChange={(e) => setEditData({ ...editData, availability: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="Full-time, Part-time, Weekends only, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.availability || "No availability info added."}
+                  </div>
+                )}
+              </div>
+            </>
           )}
 
-          {/* Availability */}
-          <div>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
-              Availability:
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editData.availability}
-                onChange={(e) => setEditData({ ...editData, availability: e.target.value })}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  fontSize: "16px",
-                  fontFamily: "'Arial', sans-serif",
-                  boxSizing: "border-box",
-                }}
-                placeholder="Full-time, Part-time, Weekends only, etc."
-              />
-            ) : (
-              <div style={{ fontSize: "16px" }}>
-                {userProfile.availability || "No availability info added."}
+          {/* Employer-specific fields */}
+          {userProfile.userType === "employer" && (
+            <>
+              {/* Company/Organization */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Company/Organization:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.experience}
+                    onChange={(e) => setEditData({ ...editData, experience: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="Your company or organization name"
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.experience || "No company info added."}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* Industry */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Industry:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.skills}
+                    onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="Technology, Healthcare, Finance, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {editData.skills || "No industry specified."}
+                  </div>
+                )}
+              </div>
+
+              {/* Typical Budget Range */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Typical Budget Range:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.hourlyRate}
+                    onChange={(e) => setEditData({ ...editData, hourlyRate: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="$1000-5000, ¥100,000-500,000, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.hourlyRate || "No budget range specified."}
+                  </div>
+                )}
+              </div>
+
+              {/* Preferred Project Types */}
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+                  Preferred Project Types:
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.availability}
+                    onChange={(e) => setEditData({ ...editData, availability: e.target.value })}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "16px",
+                      fontFamily: "'Arial', sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                    placeholder="Web Development, Mobile Apps, Design, etc."
+                  />
+                ) : (
+                  <div style={{ fontSize: "16px" }}>
+                    {userProfile.availability || "No project types specified."}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
