@@ -48,7 +48,7 @@ export const FeedsPage = () => {
             createdAt: "2023-10-01"
           }
         ];
-        
+        console.log("Fetched offers:", data);
         setOffers(data);
       })
       .catch(error => console.error('Error fetching offers:', error));
