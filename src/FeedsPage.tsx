@@ -13,60 +13,86 @@ export const FeedsPage = () => {
       color: "white",
       minHeight: "100vh",
       width: "100%",
-      height: "100%",
       backgroundColor: "#06C755",
       display: "flex",
-      justifyContent: "space-between",
-      alignItems: 'center',
       flexDirection: "column",
+      position: "relative",
     }}>
+      {/* Top Header */}
       <div style={{ 
         display: "flex", 
         justifyContent: "center", 
         alignItems: "center",
-        marginBottom: "30px" 
+        padding: "20px",
+        paddingBottom: "30px"
       }}>
         <h1 
         style={{ 
           margin: 0, 
-          fontSize: "24px" , 
-          fontStyle: "bold"
+          fontSize: "24px",
+          fontWeight: "bold"
           }}
           >LINE GIG Feeds</h1>
       </div> 
+
+      {/* Main Content Area */}
       <div style={{
+        flex: 1,
+        padding: "20px",
+        paddingBottom: "100px", // Space for bottom bar
+        backgroundColor: "#fff",
+        color: "#333",
+      }}>
+        {/* Your main feeds content will go here */}
+        <p>Main content area for feeds...</p>
+      </div>
+
+      {/* Bottom App Bar - Sticky */}
+      <div style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         gap: "20px",
-        flexWrap: "wrap",
-        padding: "20px",
-        backgroundColor: "#fff"
+        padding: "15px 20px",
+        backgroundColor: "#fff",
+        borderTop: "1px solid #eee",
+        boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.1)",
+        zIndex: 1000,
       }}>
         <div 
         onClick={() => navigate("/offers")}
         style={{
           backgroundColor: "#06C755",
           color: "white",
-          padding: "10px 20px",
-          borderRadius: "5px",
+          padding: "12px 24px",
+          borderRadius: "25px",
           cursor: "pointer",
-          display: "inline-block",
           fontFamily: "'Arial', sans-serif",
+          fontWeight: "600",
+          flex: 1,
+          textAlign: "center",
+          maxWidth: "150px",
         }}
       >
-        Offers Page
+        Offers
       </div>
       <div
       onClick={() => navigate("/profile")}
           style={{
             backgroundColor: "#06C755",
-            border: "none",
             color: "white",
-            padding: "10px 20px",
-            borderRadius: "5px",
+            padding: "12px 24px",
+            borderRadius: "25px",
             cursor: "pointer",
             fontFamily: "'Arial', sans-serif",
+            fontWeight: "600",
+            flex: 1,
+            textAlign: "center",
+            maxWidth: "150px",
           }}
       >Profile</div>
       </div>
