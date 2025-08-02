@@ -13,12 +13,17 @@ interface Profile {
 interface UserProfile {
   profile: Profile | null;
   userType: "employer" | "freelancer" | null;
+  dbId: number | null;
   bio: string;
   skills: string[];
   experience: string;
   location: string;
   hourlyRate: string;
   availability: string;
+  company?: string;
+  industry?: string;
+  budgetRange?: string;
+  projectTypes?: string;
 }
 
 function ProfilePage() {
@@ -26,14 +31,20 @@ function ProfilePage() {
   const [userProfile, setUserProfile] = useState<UserProfile>({
     profile: null,
     userType: null,
+    dbId: null,
     bio: "",
     skills: [],
     experience: "",
     location: "",
     hourlyRate: "",
     availability: "",
+    company: "",
+    industry: "",
+    budgetRange: "",
+    projectTypes: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [editData, setEditData] = useState({
     bio: "",
     skills: "",
@@ -41,7 +52,59 @@ function ProfilePage() {
     location: "",
     hourlyRate: "",
     availability: "",
+    company: "",
+    industry: "",
+    budgetRange: "",
+    projectTypes: "",
   });
+
+  // Fetch user data from API
+  const fetchUserData = async (userId: string, userType: "employer" | "freelancer") => {
+    try {
+      const endpoint = userType === "employer" 
+        ? "https://line-gig-api.vercel.app/employers"
+        : "https://line-gig-api.vercel.app/freelancers";
+      
+      const response = await fetch(endpoint);
+      if (response.ok) {
+        const users = await response.json();
+        const userData = users.find((user: any) => user.lineId === userId);
+        return userData;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
+
+  // Update user data via API
+  const updateUserData = async (userData: any) => {
+    try {
+      const endpoint = userProfile.userType === "employer" 
+        ? `https://line-gig-api.vercel.app/api/employers/${userProfile.dbId}`
+        : `https://line-gig-api.vercel.app/api/freelancers/${userProfile.dbId}`;
+      
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        return updatedUser;
+      } else {
+        console.error("Failed to update user data");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error updating user data:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const initProfile = async () => {
@@ -50,29 +113,72 @@ function ProfilePage() {
           const profile = await liff.getProfile();
           const userType = localStorage.getItem("userType") as "employer" | "freelancer" | null;
           
-          // Load saved profile data from localStorage
-          const savedProfile = localStorage.getItem("userProfileData");
-          const profileData = savedProfile ? JSON.parse(savedProfile) : {};
-          
-          setUserProfile({
-            profile,
-            userType,
-            bio: profileData.bio || "",
-            skills: profileData.skills || [],
-            experience: profileData.experience || "",
-            location: profileData.location || "",
-            hourlyRate: profileData.hourlyRate || "",
-            availability: profileData.availability || "",
-          });
+          if (userType) {
+            // Fetch user data from API
+            const userData = await fetchUserData(profile.userId, userType);
+            
+            if (userData) {
+              // User exists in database
+              setUserProfile({
+                profile,
+                userType,
+                dbId: userData.id,
+                bio: userData.bio || "",
+                skills: userData.skills || [],
+                experience: userData.experience || "",
+                location: userData.location || "",
+                hourlyRate: userData.hourlyRate || "",
+                availability: userData.availability || "",
+                company: userData.company || "",
+                industry: userData.industry || "",
+                budgetRange: userData.budgetRange || "",
+                projectTypes: userData.projectTypes || "",
+              });
 
-          setEditData({
-            bio: profileData.bio || "",
-            skills: profileData.skills?.join(", ") || "",
-            experience: profileData.experience || "",
-            location: profileData.location || "",
-            hourlyRate: profileData.hourlyRate || "",
-            availability: profileData.availability || "",
-          });
+              setEditData({
+                bio: userData.bio || "",
+                skills: Array.isArray(userData.skills) ? userData.skills.join(", ") : (userData.skills || ""),
+                experience: userData.experience || "",
+                location: userData.location || "",
+                hourlyRate: userData.hourlyRate || "",
+                availability: userData.availability || "",
+                company: userData.company || "",
+                industry: userData.industry || "",
+                budgetRange: userData.budgetRange || "",
+                projectTypes: userData.projectTypes || "",
+              });
+            } else {
+              // User not found in database, show empty profile
+              setUserProfile({
+                profile,
+                userType,
+                dbId: null,
+                bio: "",
+                skills: [],
+                experience: "",
+                location: "",
+                hourlyRate: "",
+                availability: "",
+                company: "",
+                industry: "",
+                budgetRange: "",
+                projectTypes: "",
+              });
+
+              setEditData({
+                bio: "",
+                skills: "",
+                experience: "",
+                location: "",
+                hourlyRate: "",
+                availability: "",
+                company: "",
+                industry: "",
+                budgetRange: "",
+                projectTypes: "",
+              });
+            }
+          }
         } else {
           navigate("/login");
         }
@@ -85,34 +191,70 @@ function ProfilePage() {
     initProfile();
   }, [navigate]);
 
-  const handleSave = () => {
-    const profileData = {
-      bio: editData.bio,
-      skills: editData.skills.split(",").map(skill => skill.trim()).filter(skill => skill),
-      experience: editData.experience,
-      location: editData.location,
-      hourlyRate: editData.hourlyRate,
-      availability: editData.availability,
-    };
+  const handleSave = async () => {
+    if (!userProfile.dbId) {
+      console.error("No database ID found for user");
+      return;
+    }
 
-    localStorage.setItem("userProfileData", JSON.stringify(profileData));
+    setIsSaving(true);
+
+    const profileData = userProfile.userType === "employer" 
+      ? {
+          bio: editData.bio,
+          location: editData.location,
+          company: editData.company,
+          industry: editData.industry,
+          budgetRange: editData.budgetRange,
+          projectTypes: editData.projectTypes,
+        }
+      : {
+          bio: editData.bio,
+          location: editData.location,
+          skills: editData.skills.split(",").map(skill => skill.trim()).filter(skill => skill),
+          experience: editData.experience,
+          hourlyRate: editData.hourlyRate,
+          availability: editData.availability,
+        };
+
+    const updatedUser = await updateUserData(profileData);
     
-    setUserProfile(prev => ({
-      ...prev,
-      ...profileData,
-    }));
+    if (updatedUser) {
+      setUserProfile(prev => ({
+        ...prev,
+        bio: updatedUser.bio,
+        location: updatedUser.location,
+        skills: updatedUser.skills || [],
+        experience: updatedUser.experience || "",
+        hourlyRate: updatedUser.hourlyRate || "",
+        availability: updatedUser.availability || "",
+        company: updatedUser.company || "",
+        industry: updatedUser.industry || "",
+        budgetRange: updatedUser.budgetRange || "",
+        projectTypes: updatedUser.projectTypes || "",
+      }));
+      
+      setIsEditing(false);
+      console.log("Profile updated successfully");
+    } else {
+      console.error("Failed to update profile");
+    }
     
-    setIsEditing(false);
+    setIsSaving(false);
   };
 
   const handleCancel = () => {
     setEditData({
       bio: userProfile.bio,
-      skills: userProfile.skills.join(", "),
+      skills: Array.isArray(userProfile.skills) ? userProfile.skills.join(", ") : "",
       experience: userProfile.experience,
       location: userProfile.location,
       hourlyRate: userProfile.hourlyRate,
       availability: userProfile.availability,
+      company: userProfile.company || "",
+      industry: userProfile.industry || "",
+      budgetRange: userProfile.budgetRange || "",
+      projectTypes: userProfile.projectTypes || "",
     });
     setIsEditing(false);
   };
@@ -120,7 +262,6 @@ function ProfilePage() {
   const handleLogout = () => {
     liff.logout();
     localStorage.removeItem("userType");
-    localStorage.removeItem("userProfileData");
     navigate("/");
   };
 
@@ -300,17 +441,18 @@ function ProfilePage() {
               </button>
               <button
                 onClick={handleSave}
+                disabled={isSaving}
                 style={{
-                  backgroundColor: "#06C755",
+                  backgroundColor: isSaving ? "#ccc" : "#06C755",
                   border: "none",
                   color: "white",
                   padding: "10px 20px",
                   borderRadius: "5px",
-                  cursor: "pointer",
+                  cursor: isSaving ? "not-allowed" : "pointer",
                   fontFamily: "'Arial', sans-serif",
                 }}
               >
-                Save
+                {isSaving ? "Saving..." : "Save"}
               </button>
             </div>
           )}
@@ -521,8 +663,8 @@ function ProfilePage() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.experience}
-                    onChange={(e) => setEditData({ ...editData, experience: e.target.value })}
+                    value={editData.company}
+                    onChange={(e) => setEditData({ ...editData, company: e.target.value })}
                     style={{
                       width: "100%",
                       padding: "10px",
@@ -536,7 +678,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
-                    {userProfile.experience || "No company info added."}
+                    {userProfile.company || "No company info added."}
                   </div>
                 )}
               </div>
@@ -549,8 +691,8 @@ function ProfilePage() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.skills}
-                    onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
+                    value={editData.industry}
+                    onChange={(e) => setEditData({ ...editData, industry: e.target.value })}
                     style={{
                       width: "100%",
                       padding: "10px",
@@ -564,7 +706,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
-                    {editData.skills || "No industry specified."}
+                    {userProfile.industry || "No industry specified."}
                   </div>
                 )}
               </div>
@@ -577,8 +719,8 @@ function ProfilePage() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.hourlyRate}
-                    onChange={(e) => setEditData({ ...editData, hourlyRate: e.target.value })}
+                    value={editData.budgetRange}
+                    onChange={(e) => setEditData({ ...editData, budgetRange: e.target.value })}
                     style={{
                       width: "100%",
                       padding: "10px",
@@ -592,7 +734,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
-                    {userProfile.hourlyRate || "No budget range specified."}
+                    {userProfile.budgetRange || "No budget range specified."}
                   </div>
                 )}
               </div>
@@ -605,8 +747,8 @@ function ProfilePage() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.availability}
-                    onChange={(e) => setEditData({ ...editData, availability: e.target.value })}
+                    value={editData.projectTypes}
+                    onChange={(e) => setEditData({ ...editData, projectTypes: e.target.value })}
                     style={{
                       width: "100%",
                       padding: "10px",
@@ -620,7 +762,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
-                    {userProfile.availability || "No project types specified."}
+                    {userProfile.projectTypes || "No project types specified."}
                   </div>
                 )}
               </div>
