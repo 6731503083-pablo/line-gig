@@ -12,7 +12,12 @@ export const FeedsPage = () => {
       fontFamily: "'Arial', sans-serif", 
       color: "white",
       minHeight: "100vh",
+      width: "100%",
+      height: "100%",
       backgroundColor: "#06C755",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: 'center'
     }}>
       <div style={{ 
         display: "flex", 
@@ -35,6 +40,7 @@ export const FeedsPage = () => {
         gap: "20px",
         flexWrap: "wrap",
         padding: "20px",
+        backgroundColor: "#fff"
       }}>
         <div 
         onClick={() => navigate("/offers")}
