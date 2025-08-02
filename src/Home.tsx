@@ -42,7 +42,6 @@ function Home() {
         color: "white",
         fontSize: "24px",
         padding: "40px 20px",
-        backgroundColor: "#121212",
       }}
     >
       <div

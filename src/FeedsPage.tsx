@@ -11,7 +11,9 @@ export const FeedsPage = () => {
       padding: "20px", 
       fontFamily: "'Arial', sans-serif", 
       color: "white",
-      minHeight: "100vh"
+      minHeight: "100vh",
+      backgroundColor: "#06C755",
+
     }}>
       <div style={{ 
         display: "flex", 

@@ -147,7 +147,7 @@ function ProfilePage() {
         fontFamily: "'Arial', sans-serif",
         color: "white",
         boxSizing: "border-box",
-        backgroundColor: "#121212",
+        backgroundColor: "#06C755",
       }}
     >
       {/* Header */}
@@ -163,8 +163,8 @@ function ProfilePage() {
           onClick={() => navigate("/feeds")}
           style={{
             backgroundColor: "transparent",
-            border: "1px solid #06C755",
-            color: "#06C755",
+            border: "1px solid #fff",
+            color: "#fff",
             padding: "8px 16px",
             borderRadius: "5px",
             cursor: "pointer",
@@ -226,7 +226,7 @@ function ProfilePage() {
               width: "80px",
               height: "80px",
               borderRadius: "50%",
-              border: "3px solid #06C755",
+              border: "3px solid #fff",
             }}
           />
           <div>
@@ -235,8 +235,8 @@ function ProfilePage() {
             </h2>
             <div
               style={{
-                backgroundColor: "#06C755",
-                color: "white",
+                backgroundColor: "#fff",
+                color: "#06C755",
                 padding: "4px 12px",
                 borderRadius: "15px",
                 fontSize: "14px",
@@ -270,9 +270,9 @@ function ProfilePage() {
             <button
               onClick={() => setIsEditing(true)}
               style={{
-                backgroundColor: "#06C755",
+                backgroundColor: "#fff",
                 border: "none",
-                color: "white",
+                color: "#06C755",
                 padding: "10px 20px",
                 borderRadius: "5px",
                 cursor: "pointer",
