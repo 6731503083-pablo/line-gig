@@ -9,8 +9,6 @@ type Offer = {
   offer_price: number;
 };
 
-
-
 const OfferPage: React.FC = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [expandedOfferId, setExpandedOfferId] = useState<number | null>(null);
@@ -19,7 +17,7 @@ const OfferPage: React.FC = () => {
     fetch('https://line-gig-api.vercel.app/offers')
       .then(res => res.json())
       .then(data => {
-        setOffers(data.offers);
+        setOffers(data);
       })
       .catch(error => console.error('Error fetching offers:', error));
   }, []);
