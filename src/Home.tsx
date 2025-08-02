@@ -26,18 +26,18 @@ function Home() {
       // Check if user exists as employer
       const employerResponse = await fetch(`https://line-gig-api.vercel.app/employers/${userId}`);
       if (employerResponse.ok) {
-        const employers = await employerResponse.json();
-        if (employers.length > 0) {
-          return { userType: "employer" as const, userData: employers[0] };
+        const employer = await employerResponse.json();
+        if (employer && employer.id) {
+          return { userType: "employer" as const, userData: employer };
         }
       }
 
       // Check if user exists as freelancer
       const freelancerResponse = await fetch(`https://line-gig-api.vercel.app/freelancers/${userId}`);
       if (freelancerResponse.ok) {
-        const freelancers = await freelancerResponse.json();
-        if (freelancers.length > 0) {
-          return { userType: "freelancer" as const, userData: freelancers[0] };
+        const freelancer = await freelancerResponse.json();
+        if (freelancer && freelancer.id) {
+          return { userType: "freelancer" as const, userData: freelancer };
         }
       }
 
@@ -56,26 +56,22 @@ function Home() {
 
       const userData = type === "employer" 
         ? {
-            userId: userId,
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl,
-            bio: "",
-            location: "",
-            company: "",
-            industry: "",
-            budgetRange: "",
-            projectTypes: "",
+            id: userId,
+            bio: profile.displayName || "New employer",
+            location: "Not specified",
+            company: "Not specified",
+            industry: "Not specified",
+            budgetRange: "Not specified",
+            projectTypes: "Not specified",
           }
         : {
-            userId: userId,
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl,
-            bio: "",
-            location: "",
-            skills: [],
-            experience: "",
-            hourlyRate: "",
-            availability: "",
+            id: userId,
+            bio: profile.displayName || "New freelancer",
+            location: "Not specified",
+            skills: ["General"],
+            experience: "Entry level",
+            hourlyRate: "Negotiable",
+            availability: "Available",
           };
 
       const response = await fetch(endpoint, {
@@ -90,6 +86,9 @@ function Home() {
         const newUser = await response.json();
         localStorage.setItem("userType", type);
         return newUser;
+      } else {
+        const errorData = await response.json();
+        console.error("Error creating user:", errorData);
       }
     } catch (error) {
       console.error("Error creating new user:", error);
