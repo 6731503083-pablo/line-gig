@@ -108,7 +108,7 @@ function CreateJobPage() {
             fontFamily: "'Arial', sans-serif",
           }}
         >
-          ← Back to Feeds
+          ← Back
         </button>
         
         <h1

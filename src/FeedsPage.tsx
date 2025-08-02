@@ -1,6 +1,7 @@
 // import liff from "@line/liff";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { BottomNav } from "./components/BottomNav";
 
 
 export const FeedsPage = () => {
@@ -271,39 +272,7 @@ export const FeedsPage = () => {
                 🔍
               </div>
             </div>
-            <div style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "10px",
-              justifyContent: "center",
-            }}>
-              {["Web Development", "Mobile Apps", "Design", "Writing", "Marketing"].map((skill, index) => (
-                <button
-                  key={index}
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#06C755",
-                    border: "1px solid #06C755",
-                    padding: "8px 16px",
-                    borderRadius: "20px",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    fontFamily: "'Arial', sans-serif",
-                    transition: "all 0.3s ease",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#06C755";
-                    e.currentTarget.style.color = "white";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#06C755";
-                  }}
-                >
-                  {skill}
-                </button>
-              ))}
-            </div>
+            
           </div>
         )}
 
@@ -334,82 +303,8 @@ export const FeedsPage = () => {
         </div>
       </div>
 
-      {/* Bottom App Bar - Sticky */}
-      <div style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "10px",
-        padding: "15px 20px",
-        backgroundColor: "#fff",
-        borderTop: "1px solid #eee",
-        boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.1)",
-        zIndex: 1000,
-      }}>
-        <div 
-        onClick={() => navigate("/offers")}
-        style={{
-          backgroundColor: "#06C755",
-          color: "white",
-          padding: "12px 20px",
-          borderRadius: "25px",
-          cursor: "pointer",
-          fontFamily: "'Arial', sans-serif",
-          fontWeight: "600",
-          flex: 1,
-          textAlign: "center",
-          maxWidth: type === "freelancer" ? "120px" : "150px",
-          fontSize: "14px",
-        }}
-      >
-        {
-          type === "employer" ? "Offers" : "Services"
-        }
-      </div>
-      
-      {/* History tab - only for freelancers */}
-      {type === "freelancer" && (
-        <div
-          onClick={() => navigate("/history")}
-          style={{
-            backgroundColor: "#06C755",
-            color: "white",
-            padding: "12px 20px",
-            borderRadius: "25px",
-            cursor: "pointer",
-            fontFamily: "'Arial', sans-serif",
-            fontWeight: "600",
-            flex: 1,
-            textAlign: "center",
-            maxWidth: "120px",
-            fontSize: "14px",
-          }}
-        >
-          History
-        </div>
-      )}
-
-      <div
-      onClick={() => navigate("/profile")}
-          style={{
-            backgroundColor: "#06C755",
-            color: "white",
-            padding: "12px 20px",
-            borderRadius: "25px",
-            cursor: "pointer",
-            fontFamily: "'Arial', sans-serif",
-            fontWeight: "600",
-            flex: 1,
-            textAlign: "center",
-            maxWidth: type === "freelancer" ? "120px" : "150px",
-            fontSize: "14px",
-          }}
-      >Profile</div>
-      </div>
+      {/* Bottom Navigation */}
+      <BottomNav userType={type as "employer" | "freelancer" | null} />
     </div>
   );
 };
