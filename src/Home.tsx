@@ -23,20 +23,22 @@ function Home() {
 
   const checkUserExists = async (userId: string) => {
     try {
-      // Check if user exists as employer
-      const employerResponse = await fetch(`https://line-gig-api.vercel.app/employers/${userId}`);
-      if (employerResponse.ok) {
-        const employer = await employerResponse.json();
-        if (employer && employer.id) {
+      // Check if user exists as employer by lineId
+      const employersResponse = await fetch(`https://line-gig-api.vercel.app/employers`);
+      if (employersResponse.ok) {
+        const employers = await employersResponse.json();
+        const employer = employers.find((emp: any) => emp.lineId === userId);
+        if (employer) {
           return { userType: "employer" as const, userData: employer };
         }
       }
 
-      // Check if user exists as freelancer
-      const freelancerResponse = await fetch(`https://line-gig-api.vercel.app/freelancers/${userId}`);
-      if (freelancerResponse.ok) {
-        const freelancer = await freelancerResponse.json();
-        if (freelancer && freelancer.id) {
+      // Check if user exists as freelancer by lineId
+      const freelancersResponse = await fetch(`https://line-gig-api.vercel.app/freelancers`);
+      if (freelancersResponse.ok) {
+        const freelancers = await freelancersResponse.json();
+        const freelancer = freelancers.find((free: any) => free.lineId === userId);
+        if (freelancer) {
           return { userType: "freelancer" as const, userData: freelancer };
         }
       }
@@ -56,7 +58,7 @@ function Home() {
 
       const userData = type === "employer" 
         ? {
-            id: userId,
+            lineId: userId, // LINE user ID
             bio: profile.displayName || "New employer",
             location: "Not specified",
             company: "Not specified",
@@ -65,7 +67,7 @@ function Home() {
             projectTypes: "Not specified",
           }
         : {
-            id: userId,
+            lineId: userId, // LINE user ID
             bio: profile.displayName || "New freelancer",
             location: "Not specified",
             skills: ["General"],
@@ -73,6 +75,9 @@ function Home() {
             hourlyRate: "Negotiable",
             availability: "Available",
           };
+
+      console.log("Creating user with data:", userData);
+      console.log("LINE User ID:", userId);
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -84,11 +89,13 @@ function Home() {
 
       if (response.ok) {
         const newUser = await response.json();
+        console.log("User created successfully:", newUser);
         localStorage.setItem("userType", type);
         return newUser;
       } else {
         const errorData = await response.json();
         console.error("Error creating user:", errorData);
+        console.error("Response status:", response.status);
       }
     } catch (error) {
       console.error("Error creating new user:", error);
