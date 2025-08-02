@@ -1,0 +1,59 @@
+.job-list {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f9f9f9;
+}
+
+.offer-container {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.offer-header h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.offer-description {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #444;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.offer-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-accept, .btn-decline {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-accept {
+  background-color: #28a745;
+}
+
+.btn-decline {
+  background-color: #dc3545;
+}

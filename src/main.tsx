@@ -14,6 +14,7 @@ const initializeApp = async () => {
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
         <App />
+        
       </StrictMode>
     );
 
@@ -29,6 +30,4 @@ const initializeApp = async () => {
     );
   }
 };
-
-// Start the application
 initializeApp();
