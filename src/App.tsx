@@ -5,6 +5,7 @@ import { FeedsPage } from "./FeedsPage";
 import OfferPage from "./OfferPage";
 import ProfilePage from "./ProfilePage";
 import { HistoryPage } from "./HistoryPage";
+import CreateJobPage from "./CreateJobPage";
 
 function App() {
   return (
@@ -20,8 +21,9 @@ function App() {
           <Route path="/feeds" element={<FeedsPage />} />
           <Route path="/offers" element={<OfferPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="*" element={<div>404 Not Found</div>} />
+          <Route path="/create-job" element={<CreateJobPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
       </Router>
     </div>

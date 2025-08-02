@@ -163,8 +163,175 @@ export const FeedsPage = () => {
         backgroundColor: "#fff",
         color: "#333",
       }}>
-        {/* Your main feeds content will go here */}
-        <p>Main content area for feeds...</p>
+        {type == "employer" && (
+          <div style={{
+            backgroundColor: "#f8f9fa",
+            padding: "25px",
+            borderRadius: "15px",
+            marginBottom: "20px",
+            border: "2px solid #06C755",
+            textAlign: "center",
+            boxShadow: "0 4px 12px rgba(6, 199, 85, 0.1)",
+          }}>
+            <div style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#06C755",
+              marginBottom: "10px",
+            }}>
+              Ready to Find Talent?
+            </div>
+            <div style={{
+              fontSize: "16px",
+              lineHeight: "1.5",
+              color: "#666",
+              marginBottom: "20px",
+            }}>
+              Post your job offers here and find the right candidates for your projects.
+            </div>
+            <button
+              onClick={() => navigate("/create-job")}
+              style={{
+                backgroundColor: "#06C755",
+                color: "white",
+                border: "none",
+                padding: "12px 30px",
+                borderRadius: "25px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                fontFamily: "'Arial', sans-serif",
+                transition: "background-color 0.3s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#05a847";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#06C755";
+              }}
+            >
+              Create Job Posting
+            </button>
+          </div>
+        )}
+        
+        {type == "freelancer" && (
+          <div style={{
+            backgroundColor: "#f8f9fa",
+            padding: "25px",
+            borderRadius: "15px",
+            marginBottom: "20px",
+            border: "2px solid #06C755",
+            boxShadow: "0 4px 12px rgba(6, 199, 85, 0.1)",
+          }}>
+            <div style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#06C755",
+              marginBottom: "15px",
+              textAlign: "center",
+            }}>
+              Find Your Next Gig
+            </div>
+            <div style={{
+              position: "relative",
+              marginBottom: "15px",
+            }}>
+              <input
+                type="text"
+                placeholder="Search for jobs, skills, or companies..."
+                style={{
+                  width: "100%",
+                  padding: "15px 20px",
+                  paddingRight: "50px",
+                  borderRadius: "25px",
+                  border: "2px solid #e0e0e0",
+                  fontSize: "16px",
+                  fontFamily: "'Arial', sans-serif",
+                  boxSizing: "border-box",
+                  outline: "none",
+                  transition: "border-color 0.3s ease",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "#06C755";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "#e0e0e0";
+                }}
+              />
+              <div style={{
+                position: "absolute",
+                right: "15px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#06C755",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}>
+                🔍
+              </div>
+            </div>
+            <div style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "10px",
+              justifyContent: "center",
+            }}>
+              {["Web Development", "Mobile Apps", "Design", "Writing", "Marketing"].map((skill, index) => (
+                <button
+                  key={index}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "#06C755",
+                    border: "1px solid #06C755",
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    fontFamily: "'Arial', sans-serif",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = "#06C755";
+                    e.currentTarget.style.color = "white";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#06C755";
+                  }}
+                >
+                  {skill}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Activity or Job Listings */}
+        <div style={{
+          backgroundColor: "#f8f9fa",
+          padding: "20px",
+          borderRadius: "15px",
+          border: "1px solid #e0e0e0",
+        }}>
+          <h3 style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: "#333",
+            marginBottom: "15px",
+            textAlign: "center",
+          }}>
+            {type === "employer" ? "Recent Job Postings" : "Available Jobs"}
+          </h3>
+          <div style={{
+            textAlign: "center",
+            color: "#666",
+            fontSize: "16px",
+            fontStyle: "italic",
+          }}>
+            No {type === "employer" ? "postings" : "jobs"} available yet.
+          </div>
+        </div>
       </div>
 
       {/* Bottom App Bar - Sticky */}
