@@ -4,10 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 export const FeedsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const type = location.state?.type as "employer" | "freelancer" | undefined;
+  const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
   return <div>
     <div>FeedsPage</div>
-    <div>{type}</div>
+    <div>User Type: {type}</div>
     <div onClick={()=>{
       liff.logout();
       localStorage.removeItem("userType");
