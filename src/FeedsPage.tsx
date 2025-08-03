@@ -1,4 +1,5 @@
 // import liff from "@line/liff";
+import liff from "@line/liff";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { BottomNav } from "./components/BottomNav";
@@ -45,22 +46,48 @@ export const FeedsPage = () => {
       setShowBotDialog(true);
     }
 
-    // Fetch offers from API
-    fetch('https://line-gig-api.vercel.app/offers')
-      .then(res => res.json())
-      .then(data => {
-        setOffers(data);
-      })
-      .catch(error => console.error('Error fetching offers:', error));
+    const fetchData = async () => {
+      try {
+        // Fetch offers from API
+        const offersResponse = await fetch('https://line-gig-api.vercel.app/offers');
+        if (offersResponse.ok) {
+          let offersData = await offersResponse.json();
+          
+          // If user is a freelancer, filter out already accepted offers
+          if (type === "freelancer" && liff.isLoggedIn()) {
+            try {
+              const profile = await liff.getProfile();
+              const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
+              if (acceptedResponse.ok) {
+                const acceptedOffers = await acceptedResponse.json();
+                const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
+                offersData = offersData.filter((offer: any) => !acceptedOfferIds.includes(offer.id));
+              }
+            } catch (error) {
+              console.error("Error filtering accepted offers:", error);
+            }
+          }
+          
+          setOffers(offersData);
+        }
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+      }
 
-    // Fetch services from API
-    fetch('https://line-gig-api.vercel.app/services')
-      .then(res => res.json())
-      .then(data => {
-        setServices(data);
-      })
-      .catch(error => console.error('Error fetching services:', error));
-  }, []);
+      try {
+        // Fetch services from API
+        const servicesResponse = await fetch('https://line-gig-api.vercel.app/services');
+        if (servicesResponse.ok) {
+          const servicesData = await servicesResponse.json();
+          setServices(servicesData);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
+    fetchData();
+  }, [type]);
 
   const handleFollowBot = () => {
     // Open LINE bot link
@@ -81,14 +108,68 @@ export const FeedsPage = () => {
     setExpandedServiceId(prevId => (prevId === serviceId ? null : serviceId));
   };
 
-  const handleAccept = (offerId: string) => {
-    alert(`✅ Accepted offer with ID: ${offerId}`);
-    // You can add logic to send accept to backend
+  const handleAccept = async (offerId: string) => {
+    try {
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        
+        // Find the offer being accepted
+        const offerToAccept = offers.find(offer => offer.id === offerId);
+        if (!offerToAccept) {
+          alert("Offer not found");
+          return;
+        }
+
+        // Create accepted offer record
+        const acceptedOfferData = {
+          ...offerToAccept,
+          freelancerId: profile.userId,
+          acceptedAt: new Date().toISOString(),
+          status: "accepted"
+        };
+
+        // Send to backend
+        const response = await fetch("https://line-gig-api.vercel.app/api/accepted-offers", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(acceptedOfferData),
+        });
+
+        if (response.ok) {
+          // Remove the offer from the current offers list
+          setOffers(prevOffers => prevOffers.filter(offer => offer.id !== offerId));
+          
+          // Update the original offer status (optional)
+          await fetch(`https://line-gig-api.vercel.app/api/offers/${offerId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: "accepted" }),
+          });
+
+          alert(`✅ Offer accepted successfully! Check your History page to see your accepted projects.`);
+        } else {
+          alert("Failed to accept offer. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Error accepting offer:", error);
+      alert("Failed to accept offer. Please try again.");
+    }
   };
 
-  const handleDecline = (offerId: string) => {
-    alert(`❌ Declined offer with ID: ${offerId}`);
-    // You can add logic to send decline to backend
+  const handleDecline = async (offerId: string) => {
+    try {
+      // Simply remove from local state for now (you can add backend logic later)
+      setOffers(prevOffers => prevOffers.filter(offer => offer.id !== offerId));
+      alert(`❌ Offer declined and removed from your feed.`);
+    } catch (error) {
+      console.error("Error declining offer:", error);
+      alert("Failed to decline offer. Please try again.");
+    }
   };
 
   const handleContactFreelancer = (serviceId: string) => {
@@ -99,6 +180,46 @@ export const FeedsPage = () => {
   const handleBookService = (serviceId: string) => {
     alert(`📅 Booking service: ${serviceId}`);
     // You can add logic to book service
+  };
+
+  const handleRefresh = async () => {
+    try {
+      // Fetch offers from API
+      const offersResponse = await fetch('https://line-gig-api.vercel.app/offers');
+      if (offersResponse.ok) {
+        let offersData = await offersResponse.json();
+        
+        // If user is a freelancer, filter out already accepted offers
+        if (type === "freelancer" && liff.isLoggedIn()) {
+          try {
+            const profile = await liff.getProfile();
+            const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
+            if (acceptedResponse.ok) {
+              const acceptedOffers = await acceptedResponse.json();
+              const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
+              offersData = offersData.filter((offer: any) => !acceptedOfferIds.includes(offer.id));
+            }
+          } catch (error) {
+            console.error("Error filtering accepted offers:", error);
+          }
+        }
+        
+        setOffers(offersData);
+      }
+    } catch (error) {
+      console.error('Error fetching offers:', error);
+    }
+
+    try {
+      // Fetch services from API
+      const servicesResponse = await fetch('https://line-gig-api.vercel.app/services');
+      if (servicesResponse.ok) {
+        const servicesData = await servicesResponse.json();
+        setServices(servicesData);
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
   };
   
   return (
@@ -372,15 +493,51 @@ export const FeedsPage = () => {
           // borderRadius: "15px",
           // border: "1px solid #e0e0e0",
         }}>
-          <h3 style={{
-            fontSize: "18px",
-            fontWeight: "bold",
-            color: "#333",
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             marginBottom: "15px",
-            // textAlign: "center",
           }}>
-            {type === "employer" ? "Available Services" : "Available Offers"}
-          </h3>
+            <h3 style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              color: "#333",
+              margin: 0,
+              // textAlign: "center",
+            }}>
+              {type === "employer" ? "Available Services" : "Available Offers"}
+            </h3>
+            <button
+              onClick={handleRefresh}
+              style={{
+                backgroundColor: "#06C755",
+                border: "none",
+                borderRadius: "20px",
+                padding: "8px 16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                fontSize: "14px",
+                color: "white",
+                fontWeight: "600",
+                boxShadow: "0 2px 8px rgba(6, 199, 85, 0.3)",
+                transition: "all 0.3s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#05a847";
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#06C755";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              title="Refresh data"
+            >
+              🔄 Refresh
+            </button>
+          </div>
           
           {/* Show Services for Employers */}
           {type === "employer" && services.length > 0 ? (

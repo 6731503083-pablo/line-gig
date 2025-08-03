@@ -6,6 +6,7 @@ import OfferPage from "./OfferPage";
 import ProfilePage from "./ProfilePage";
 import { HistoryPage } from "./HistoryPage";
 import CreateJobPage from "./CreateJobPage";
+import CreateServicePage from "./CreateServicePage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/offers" element={<OfferPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/create-job" element={<CreateJobPage />} />
+          <Route path="/create-service" element={<CreateServicePage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
