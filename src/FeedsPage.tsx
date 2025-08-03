@@ -41,12 +41,17 @@ export const FeedsPage = () => {
   const [expandedServiceId, setExpandedServiceId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showFreelancerInfo, setShowFreelancerInfo] = useState(false);
+  const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
   const location = useLocation();
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
   useEffect(() => {
-    // Always show bot dialog at start
-    setShowBotDialog(true);
+    // Show bot dialog only if user hasn't followed yet
+    const hasFollowedBot = localStorage.getItem("hasFollowedBot");
+    if (!hasFollowedBot) {
+      setShowBotDialog(true);
+    }
 
     fetchData();
   }, [type]);
@@ -110,6 +115,30 @@ export const FeedsPage = () => {
 
   const handleServiceToggle = (serviceId: string) => {
     setExpandedServiceId(prevId => (prevId === serviceId ? null : serviceId));
+  };
+
+  const handleShowFreelancerInfo = async (freelancerId: string) => {
+    try {
+      // For now, we'll create a mock freelancer info since we don't have a freelancer API
+      // In a real app, you'd fetch this from your backend
+      const mockFreelancerInfo = {
+        id: freelancerId,
+        name: "Freelancer",
+        rating: 4.8,
+        completedJobs: 45,
+        skills: ["Web Development", "Mobile Apps", "UI/UX Design"],
+        experience: "3+ years",
+        location: "Bangkok, Thailand",
+        responseTime: "Within 2 hours",
+        languages: ["Thai", "English"]
+      };
+      
+      setSelectedFreelancer(mockFreelancerInfo);
+      setShowFreelancerInfo(true);
+    } catch (error) {
+      console.error("Error fetching freelancer info:", error);
+      alert("Failed to load freelancer information.");
+    }
   };
 
   const handleAccept = async (offerId: string) => {
@@ -340,6 +369,239 @@ export const FeedsPage = () => {
                 }}
               >
                 I've Already Followed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Freelancer Info Dialog */}
+      {showFreelancerInfo && selectedFreelancer && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 2000,
+          padding: "20px",
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "15px",
+            padding: "30px",
+            maxWidth: "450px",
+            width: "100%",
+            color: "#333",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+            maxHeight: "80vh",
+            overflowY: "auto",
+          }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}>
+              <h2 style={{
+                color: "#06C755",
+                margin: 0,
+                fontSize: "22px",
+                fontWeight: "bold",
+              }}>
+                Freelancer Profile
+              </h2>
+              <button
+                onClick={() => setShowFreelancerInfo(false)}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "24px",
+                  color: "#666",
+                  cursor: "pointer",
+                  padding: "0",
+                  width: "30px",
+                  height: "30px",
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div style={{
+              textAlign: "center",
+              marginBottom: "25px",
+            }}>
+              <div style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                backgroundColor: "#06C755",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 15px",
+                fontSize: "36px",
+                color: "white",
+                fontWeight: "bold",
+              }}>
+                {selectedFreelancer.name.charAt(0)}
+              </div>
+              <h3 style={{
+                margin: "0 0 10px 0",
+                fontSize: "20px",
+                color: "#333",
+              }}>
+                {selectedFreelancer.name}
+              </h3>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5px",
+                marginBottom: "10px",
+              }}>
+                <span style={{ color: "#ffa500", fontSize: "18px" }}>★</span>
+                <span style={{ fontWeight: "bold", fontSize: "16px" }}>{selectedFreelancer.rating}</span>
+                <span style={{ color: "#666", fontSize: "14px" }}>({selectedFreelancer.completedJobs} jobs completed)</span>
+              </div>
+            </div>
+
+            <div style={{
+              display: "grid",
+              gap: "15px",
+            }}>
+              <div>
+                <h4 style={{
+                  margin: "0 0 8px 0",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  color: "#06C755",
+                  textTransform: "uppercase",
+                }}>
+                  Skills
+                </h4>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {selectedFreelancer.skills.map((skill: string, index: number) => (
+                    <span
+                      key={index}
+                      style={{
+                        backgroundColor: "#f0f8f0",
+                        color: "#06C755",
+                        padding: "6px 12px",
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        border: "1px solid #06C755",
+                      }}
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "15px",
+              }}>
+                <div>
+                  <h4 style={{
+                    margin: "0 0 5px 0",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "#06C755",
+                    textTransform: "uppercase",
+                  }}>
+                    Experience
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+                    {selectedFreelancer.experience}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{
+                    margin: "0 0 5px 0",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "#06C755",
+                    textTransform: "uppercase",
+                  }}>
+                    Location
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+                    {selectedFreelancer.location}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{
+                    margin: "0 0 5px 0",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "#06C755",
+                    textTransform: "uppercase",
+                  }}>
+                    Response Time
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+                    {selectedFreelancer.responseTime}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{
+                    margin: "0 0 5px 0",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "#06C755",
+                    textTransform: "uppercase",
+                  }}>
+                    Languages
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+                    {selectedFreelancer.languages.join(", ")}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{
+              marginTop: "25px",
+              display: "flex",
+              gap: "10px",
+              justifyContent: "center",
+            }}>
+              <button
+                onClick={() => setShowFreelancerInfo(false)}
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  color: "#333",
+                  border: "2px solid #e0e0e0",
+                  padding: "12px 25px",
+                  borderRadius: "25px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontFamily: "'Arial', sans-serif",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e9ecef";
+                  e.currentTarget.style.borderColor = "#adb5bd";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f8f9fa";
+                  e.currentTarget.style.borderColor = "#e0e0e0";
+                }}
+              >
+                Close
               </button>
             </div>
           </div>
@@ -709,28 +971,30 @@ export const FeedsPage = () => {
                       gap: "15px",
                       justifyContent: "center",
                     }}>
-                      {/* <button
-                        onClick={() => handleContactFreelancer(service.id)}
+                      <button
+                        onClick={() => handleShowFreelancerInfo(service.freelancerId)}
                         style={{
                           padding: "10px 20px",
-                          border: "none",
+                          border: "2px solid #06C755",
                           borderRadius: "8px",
                           fontSize: "14px",
-                          color: "white",
-                          backgroundColor: "#007bff",
+                          color: "#06C755",
+                          backgroundColor: "transparent",
                           cursor: "pointer",
                           fontWeight: "600",
-                          transition: "background-color 0.3s ease",
+                          transition: "all 0.3s ease",
                         }}
                         onMouseOver={(e) => {
-                          e.currentTarget.style.backgroundColor = "#0056b3";
+                          e.currentTarget.style.backgroundColor = "#06C755";
+                          e.currentTarget.style.color = "white";
                         }}
                         onMouseOut={(e) => {
-                          e.currentTarget.style.backgroundColor = "#007bff";
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "#06C755";
                         }}
                       >
-                        Contact
-                      </button> */}
+                        View Profile
+                      </button>
                       <button
                         onClick={() => handleBookService(service.id)}
                         style={{
