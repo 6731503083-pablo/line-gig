@@ -331,9 +331,9 @@ export const FeedsPage = () => {
           <div style={{
             backgroundColor: "#f8f9fa",
             padding: "25px",
-            borderRadius: "15px",
+            // borderRadius: "15px",
             marginBottom: "20px",
-            border: "2px solid #06C755",
+            // border: "2px solid #06C755",
             textAlign: "center",
             boxShadow: "0 4px 12px rgba(6, 199, 85, 0.1)",
           }}>
@@ -345,14 +345,14 @@ export const FeedsPage = () => {
             }}>
               Ready to Find Talent?
             </div>
-            <div style={{
+            {/* <div style={{
               fontSize: "16px",
               lineHeight: "1.5",
               color: "#666",
               marginBottom: "20px",
             }}>
               Post your offers here and find the right candidates for your projects.
-            </div>
+            </div> */}
             <button
               onClick={() => navigate("/create-job")}
               style={{
