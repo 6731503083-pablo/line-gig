@@ -425,7 +425,6 @@ function ProfilePage() {
       style={{
         width: "100%",
         minHeight: "100vh",
-        padding: "20px",
         fontFamily: "'Arial', sans-serif",
         color: "white",
         boxSizing: "border-box",
@@ -704,7 +703,7 @@ function ProfilePage() {
                   fontFamily: "'Arial', sans-serif",
                   boxSizing: "border-box",
                 }}
-                placeholder="Tokyo, Japan / Remote"
+                placeholder="Please input your address"
               />
             ) : (
               <div style={{ fontSize: "16px" }}>
@@ -735,7 +734,7 @@ function ProfilePage() {
                       fontFamily: "'Arial', sans-serif",
                       boxSizing: "border-box",
                     }}
-                    placeholder="React, JavaScript, Design, etc. (comma separated)"
+                    placeholder="Tell us what you can do best at"
                   />
                 ) : (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -809,7 +808,7 @@ function ProfilePage() {
                       fontFamily: "'Arial', sans-serif",
                       boxSizing: "border-box",
                     }}
-                    placeholder="$50/hour, ¥5000/hour, etc."
+                    placeholder="Your service cost on hourly basis"
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
@@ -837,7 +836,7 @@ function ProfilePage() {
                       fontFamily: "'Arial', sans-serif",
                       boxSizing: "border-box",
                     }}
-                    placeholder="Full-time, Part-time, Weekends only, etc."
+                    placeholder="Monday, Tuesday etc"
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
@@ -926,7 +925,7 @@ function ProfilePage() {
                       fontFamily: "'Arial', sans-serif",
                       boxSizing: "border-box",
                     }}
-                    placeholder="$1000-5000, ¥100,000-500,000, etc."
+                    placeholder="How much does your service cost on average"
                   />
                 ) : (
                   <div style={{ fontSize: "16px" }}>
