@@ -563,20 +563,50 @@ export const FeedsPage = () => {
                     }}
                   >
                     <div>
-                      <h2 style={{ 
-                        marginBottom: "10px", 
-                        fontSize: "18px",
-                        color: "#06C755"
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "10px"
                       }}>
-                        {service.title}
-                      </h2>
-                      <p style={{ 
-                        margin: "5px 0",
-                        fontSize: "14px",
-                        fontWeight: "bold"
+                        <h2 style={{ 
+                          margin: 0, 
+                          fontSize: "18px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          {service.title}
+                        </h2>
+                        <span style={{
+                          fontSize: "15px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          Price: {service.price}
+                        </span>
+                      </div>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "10px"
                       }}>
-                        Price: {service.price}
-                      </p>
+                        <h2 style={{ 
+                          margin: 0, 
+                          fontSize: "18px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          {service.title}
+                        </h2>
+                        <span style={{
+                          fontSize: "15px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          ฿{service.price}
+                        </span>
+                      </div>
                       <p style={{ 
                         margin: "5px 0",
                         fontSize: "12px",
@@ -732,21 +762,28 @@ export const FeedsPage = () => {
                     }}
                   >
                     <div>
-                      <h2 style={{ 
-                        marginBottom: "10px",
-                        marginTop: 0, 
-                        fontSize: "18px",
-                        color: "#06C755"
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "10px"
                       }}>
-                        {offer.title}
-                      </h2>
-                      <p style={{ 
-                        margin: "5px 0",
-                        fontSize: "14px",
-                        fontWeight: "bold"//
-                      }}>
-                        Budget: {offer.budget}
-                      </p>
+                        <h2 style={{ 
+                          margin: 0,
+                          fontSize: "18px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          {offer.title}
+                        </h2>
+                        <span style={{
+                          fontSize: "15px",
+                          color: "#06C755",
+                          fontWeight: "bold"//
+                        }}>
+                          Budget: {offer.budget}
+                        </span>
+                      </div>
                       <p style={{ 
                         margin: "5px 0",
                         fontSize: "14px",
