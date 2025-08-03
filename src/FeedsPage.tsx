@@ -401,7 +401,7 @@ export const FeedsPage = () => {
               }}>
                 <input
                   type="text"
-                  placeholder="Search for jobs, skills, or companies..."
+                  placeholder="Search for offers"
                   style={{
                     width: "100%",
                     padding: "15px 20px",
@@ -601,7 +601,7 @@ export const FeedsPage = () => {
                         </h2>
                         <span style={{
                           fontSize: "15px",
-                          color: "#06C755",
+                          // color: "#06C755",
                           fontWeight: "bold"
                         }}>
                           ฿{service.budget}
@@ -618,7 +618,6 @@ export const FeedsPage = () => {
 
                     <div style={{
                       fontSize: "15px",
-                      lineHeight: 1.5,
                       color: "#444",
                       margin: "15px 0",
                     }}>
@@ -778,7 +777,7 @@ export const FeedsPage = () => {
                         </h2>
                         <span style={{
                           fontSize: "15px",
-                          color: "#0c0c0cff",
+                          // color: "#191818ff",
                           fontWeight: "bold"//
                         }}>
                           Budget: {offer.budget}
