@@ -213,7 +213,7 @@ function CreateJobPage() {
             <textarea
               value={offerData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Describe the project requirements, goals, and what you're looking for..."
+              placeholder="Tell us the details"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -251,7 +251,7 @@ function CreateJobPage() {
               type="text"
               value={offerData.budget}
               onChange={(e) => handleInputChange("budget", e.target.value)}
-              placeholder="e.g., $500-1000, ¥50,000-100,000, or Negotiable"
+              placeholder="The price for completing your offer"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -286,7 +286,7 @@ function CreateJobPage() {
             <textarea
               value={offerData.requirements}
               onChange={(e) => handleInputChange("requirements", e.target.value)}
-              placeholder="Specific skills, experience, or qualifications needed..."
+              placeholder="Requirements to work on this job"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -324,7 +324,7 @@ function CreateJobPage() {
               type="text"
               value={offerData.deadline}
               onChange={(e) => handleInputChange("deadline", e.target.value)}
-              placeholder="e.g., 2024-12-31, In 2 weeks, or Flexible"
+              placeholder="Time window eg. 30 days"
               style={{
                 width: "100%",
                 padding: "15px",
