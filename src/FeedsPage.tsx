@@ -43,6 +43,8 @@ export const FeedsPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showFreelancerInfo, setShowFreelancerInfo] = useState(false);
   const [selectedFreelancer, setSelectedFreelancer] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"offers" | "myServices">("offers");
+  const [myServices, setMyServices] = useState<Service[]>([]);
   const location = useLocation();
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
@@ -90,6 +92,17 @@ export const FeedsPage = () => {
       if (servicesResponse.ok) {
         const servicesData = await servicesResponse.json();
         setServices(servicesData);
+        
+        // If user is a freelancer, also fetch their own services
+        if (type === "freelancer" && liff.isLoggedIn()) {
+          try {
+            const profile = await liff.getProfile();
+            const freelancerServices = servicesData.filter((service: Service) => service.freelancerId === profile.userId);
+            setMyServices(freelancerServices);
+          } catch (error) {
+            console.error("Error filtering freelancer services:", error);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching services:', error);
@@ -263,6 +276,26 @@ export const FeedsPage = () => {
     setIsRefreshing(true);
     await fetchData();
     setIsRefreshing(false);
+  };
+
+  const handleDeleteService = async (serviceId: string) => {
+    try {
+      const response = await fetch(`https://line-gig-api.vercel.app/services/${serviceId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove the service from local state
+        setMyServices(prevServices => prevServices.filter(service => service.id !== serviceId));
+        setServices(prevServices => prevServices.filter(service => service.id !== serviceId));
+        alert(`✅ Service deleted successfully!`);
+      } else {
+        alert("Failed to delete service. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      alert("Failed to delete service. Please try again.");
+    }
   };
   
   return (
@@ -762,6 +795,76 @@ export const FeedsPage = () => {
             </div>   
         )}
 
+        {/* Tabs for Freelancers */}
+        {type === "freelancer" && (
+          <div style={{
+            display: "flex",
+            borderBottom: "3px solid #f0f0f0",
+            marginBottom: "20px",
+          }}>
+            <button
+              onClick={() => setActiveTab("offers")}
+              style={{
+                flex: 1,
+                padding: "12px 20px",
+                backgroundColor: activeTab === "offers" ? "#06C755" : "transparent",
+                color: activeTab === "offers" ? "white" : "#666",
+                border: "none",
+                borderRadius: "8px 8px 0 0",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                fontFamily: "'Arial', sans-serif",
+              }}
+              onMouseOver={(e) => {
+                if (activeTab !== "offers") {
+                  e.currentTarget.style.backgroundColor = "#f0f8f0";
+                  e.currentTarget.style.color = "#06C755";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeTab !== "offers") {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "#666";
+                }
+              }}
+            >
+              Available Offers ({offers.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("myServices")}
+              style={{
+                flex: 1,
+                padding: "12px 20px",
+                backgroundColor: activeTab === "myServices" ? "#06C755" : "transparent",
+                color: activeTab === "myServices" ? "white" : "#666",
+                border: "none",
+                borderRadius: "8px 8px 0 0",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                fontFamily: "'Arial', sans-serif",
+              }}
+              onMouseOver={(e) => {
+                if (activeTab !== "myServices") {
+                  e.currentTarget.style.backgroundColor = "#f0f8f0";
+                  e.currentTarget.style.color = "#06C755";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeTab !== "myServices") {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "#666";
+                }
+              }}
+            >
+              My Services ({myServices.length})
+            </button>
+          </div>
+        )}
+
         {/* Available Offers or Services */}
         <div style={{
           // backgroundColor: "#f8f9fa",
@@ -782,7 +885,11 @@ export const FeedsPage = () => {
               margin: 0,
               // textAlign: "center",
             }}>
-              {type === "employer" ? "Available Services" : "Available Offers"}
+              {type === "employer" 
+                ? "Available Services" 
+                : type === "freelancer" && activeTab === "myServices"
+                  ? "My Posted Services"
+                  : "Available Offers"}
             </h3>
             <button
               onClick={handleRefresh}
@@ -1035,7 +1142,7 @@ export const FeedsPage = () => {
           ) : null}
 
           {/* Show Offers for Freelancers */}
-          {!isLoading && type === "freelancer" && offers.length > 0 ? (
+          {!isLoading && type === "freelancer" && activeTab === "offers" && offers.length > 0 ? (
             <div style={{
               maxHeight: "60vh",
               overflowY: "auto",
@@ -1200,7 +1307,7 @@ export const FeedsPage = () => {
                 );
               })}
             </div>
-          ) : !isLoading && type === "freelancer" && offers.length === 0 ? (
+          ) : !isLoading && type === "freelancer" && activeTab === "offers" && offers.length === 0 ? (
             <div style={{
               textAlign: "center",
               color: "#666",
@@ -1209,6 +1316,239 @@ export const FeedsPage = () => {
               padding: "40px 20px",
             }}>
               No offers available yet.
+            </div>
+          ) : null}
+
+          {/* Show My Services for Freelancers */}
+          {!isLoading && type === "freelancer" && activeTab === "myServices" && myServices.length > 0 ? (
+            <div style={{
+              maxHeight: "60vh",
+              overflowY: "auto",
+              marginBottom: "20px",
+            }}>
+              {myServices.map((service) => {
+                const isExpanded = expandedServiceId === service.id;
+                const shortDesc = service.description.slice(0, 80);
+
+                return (
+                  <div
+                    key={service.id}
+                    style={{
+                      background: "#fff",
+                      border: "3px solid #ddd",
+                      borderRadius: "12px",
+                      padding: "8px",
+                      marginBottom: "8px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    <div>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "10px"
+                      }}>
+                        <h2 style={{ 
+                          margin: 0, 
+                          fontSize: "18px",
+                          color: "#06C755",
+                          fontWeight: "bold"
+                        }}>
+                          {service.title}
+                        </h2>
+                        <span style={{
+                          fontSize: "15px",
+                          color: "#0c0c0cff",
+                          fontWeight: "bold"
+                        }}>
+                          Budget: ฿{service.budget}
+                        </span>
+                      </div>
+                      <p style={{ 
+                        margin: "5px 0",
+                        fontSize: "14px",
+                        color: "#666"
+                      }}>
+                        Category: {service.category} • Status: {service.status}
+                      </p>
+                    </div>
+
+                    <div style={{
+                      fontSize: "15px",
+                      color: "#444",
+                      margin: "15px 0",
+                    }}>
+                      <p>{isExpanded ? service.description : shortDesc + "..."}</p>
+                      
+                      {isExpanded && service.skills && service.skills.length > 0 && (
+                        <div style={{ marginTop: "15px" }}>
+                          <h4 style={{ 
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#333",
+                            marginBottom: "5px"
+                          }}>
+                            Skills:
+                          </h4>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                            {service.skills.map((skill, index) => (
+                              <span
+                                key={index}
+                                style={{
+                                  backgroundColor: "#06C755",
+                                  color: "white",
+                                  padding: "4px 8px",
+                                  borderRadius: "12px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {isExpanded && (
+                        <div style={{ marginTop: "15px", fontSize: "14px", color: "#666" }}>
+                          <p><strong>Duration:</strong> {service.duration}</p>
+                          <p><strong>Location:</strong> {service.location}</p>
+                          <p><strong>Urgency:</strong> {service.urgency}</p>
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => handleServiceToggle(service.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#06C755",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          paddingLeft: "5px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {isExpanded ? "Show Less" : "Read More"}
+                      </button>
+                    </div>
+
+                    {/* Action buttons for freelancer's own services */}
+                    <div style={{
+                      marginTop: "15px",
+                      display: "flex",
+                      gap: "15px",
+                      justifyContent: "center",
+                    }}>
+                      <button
+                        onClick={() => alert(`✏️ Edit service: ${service.title}`)}
+                        style={{
+                          padding: "10px 20px",
+                          border: "2px solid #06C755",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "#06C755",
+                          backgroundColor: "transparent",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#06C755";
+                          e.currentTarget.style.color = "white";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "#06C755";
+                        }}
+                      >
+                        Edit Service
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to delete "${service.title}"?`)) {
+                            handleDeleteService(service.id);
+                          }
+                        }}
+                        style={{
+                          padding: "10px 20px",
+                          border: "2px solid #dc3545",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "#dc3545",
+                          backgroundColor: "transparent",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#dc3545";
+                          e.currentTarget.style.color = "white";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "#dc3545";
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : !isLoading && type === "freelancer" && activeTab === "myServices" && myServices.length === 0 ? (
+            <div style={{
+              textAlign: "center",
+              color: "#666",
+              fontSize: "16px",
+              fontStyle: "italic",
+              padding: "40px 20px",
+            }}>
+              <div style={{
+                fontSize: "48px",
+                marginBottom: "20px",
+              }}>
+                📝
+              </div>
+              <div style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "10px",
+                color: "#333",
+              }}>
+                No services posted yet
+              </div>
+              <div style={{
+                marginBottom: "25px",
+                lineHeight: "1.5",
+              }}>
+                Start by creating your first service to showcase your skills and attract potential clients.
+              </div>
+              <button
+                onClick={() => navigate("/create-service")}
+                style={{
+                  backgroundColor: "#06C755",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 30px",
+                  borderRadius: "25px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontFamily: "'Arial', sans-serif",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#05a847";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#06C755";
+                }}
+              >
+                Create Your First Service
+              </button>
             </div>
           ) : null}
         </div>
