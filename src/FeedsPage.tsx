@@ -113,7 +113,7 @@ export const FeedsPage = () => {
 
   const handleFollowBot = () => {
     // Open LINE bot link
-    window.open("https://line.me/R/ti/p/@720ianqt", "_blank");
+    window.open("https://line.me/R/ti/p/@676wrfuk", "_blank");
   };
 
   const handleConfirmFollowed = () => {
@@ -249,7 +249,7 @@ export const FeedsPage = () => {
         };
 
         // Send broadcast notification to freelancer
-        const response = await fetch("https://line-gig-message-service.onrender.com/api/broadcast", {
+        const response = await fetch("https://line-gig-message-service.onrender.com/api/push", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
