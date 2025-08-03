@@ -570,7 +570,7 @@ export const FeedsPage = () => {
             }}>
               {services.map((service) => {
                 const isExpanded = expandedServiceId === service.id;
-                const shortDesc = service.description.slice(0, 120);
+                const shortDesc = service.description.slice(0, 80);
 
                 return (
                   <div
@@ -747,7 +747,7 @@ export const FeedsPage = () => {
             }}>
               {offers.map((offer) => {
                 const isExpanded = expandedOfferId === offer.id;
-                const shortDesc = offer.description.slice(0, 120);
+                const shortDesc = offer.description.slice(0, 80);
 
                 return (
                   <div
@@ -778,7 +778,7 @@ export const FeedsPage = () => {
                         </h2>
                         <span style={{
                           fontSize: "15px",
-                          color: "#06C755",
+                          color: "#0c0c0cff",
                           fontWeight: "bold"//
                         }}>
                           Budget: {offer.budget}
