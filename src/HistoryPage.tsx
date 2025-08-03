@@ -28,7 +28,7 @@ export const HistoryPage = () => {
         try {
           if (liff.isLoggedIn()) {
             const profile = await liff.getProfile();
-            const response = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
+            const response = await fetch(`https://line-gig-api.vercel.app/api/accepted-offers/freelancer/${profile.userId}`);
             if (response.ok) {
               const data = await response.json();
               setAcceptedOffers(data);
