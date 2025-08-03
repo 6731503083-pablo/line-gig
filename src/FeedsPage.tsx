@@ -188,9 +188,46 @@ export const FeedsPage = () => {
   //   // You can add logic to contact freelancer
   // };
 
-  const handleBookService = (serviceId: string) => {
-    alert(`📅 Booking service: ${serviceId}`);
-    // You can add logic to book service
+  const handleBookService = async (serviceId: string) => {
+    try {
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        
+        // Find the service being booked
+        const serviceToBook = services.find(service => service.id === serviceId);
+        if (!serviceToBook) {
+          alert("Service not found");
+          return;
+        }
+
+        // Prepare broadcast message data
+        const broadcastData = {
+          userId: serviceToBook.freelancerId, // Send to the freelancer who posted the service
+          engagerName: profile.displayName || "Anonymous User" // Name of the employer booking the service
+        };
+
+        // Send broadcast notification to freelancer
+        const response = await fetch("https://line-gig-message-service.onrender.com/api/broadcast", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(broadcastData),
+        });
+
+        if (response.ok) {
+          alert(`📅 Service booked successfully! The freelancer has been notified.`);
+        } else {
+          console.error("Failed to send notification:", await response.text());
+          alert("Service booking initiated, but notification failed. Please contact the freelancer directly.");
+        }
+      } else {
+        alert("Please log in to book services.");
+      }
+    } catch (error) {
+      console.error("Error booking service:", error);
+      alert("Failed to book service. Please try again.");
+    }
   };
 
   const handleRefresh = async () => {
