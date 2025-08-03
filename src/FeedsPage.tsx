@@ -601,12 +601,12 @@ export const FeedsPage = () => {
                           // color: "#06C755",
                           fontWeight: "bold"
                         }}>
-                          ฿{service.budget}
+                          Budget: ฿{service.budget}
                         </span>
                       </div>
                       <p style={{ 
                         margin: "5px 0",
-                        fontSize: "12px",
+                        fontSize: "14px",
                         color: "#666"
                       }}>
                         Category: {service.category}
@@ -658,7 +658,6 @@ export const FeedsPage = () => {
                           cursor: "pointer",
                           fontSize: "14px",
                           paddingLeft: "5px",
-                          marginTop: "10px",
                           fontWeight: "600",
                         }}
                       >
