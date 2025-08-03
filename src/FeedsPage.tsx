@@ -8,9 +8,21 @@ type Offer = {
   title: string;
   description: string;
   budget: string;
-  employerId: number;
+  employerId: string;
   requirements: string;
   deadline: string;
+  status: string;
+  createdAt: string;
+};
+
+type Service = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  freelancerId: string;
+  skills: string[];
+  category: string;
   status: string;
   createdAt: string;
 };
@@ -20,7 +32,9 @@ export const FeedsPage = () => {
   const navigate = useNavigate();
   const [showBotDialog, setShowBotDialog] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [expandedOfferId, setExpandedOfferId] = useState<string | null>(null);
+  const [expandedServiceId, setExpandedServiceId] = useState<string | null>(null);
   const location = useLocation();
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
@@ -38,6 +52,14 @@ export const FeedsPage = () => {
         setOffers(data);
       })
       .catch(error => console.error('Error fetching offers:', error));
+
+    // Fetch services from API
+    fetch('https://line-gig-api.vercel.app/services')
+      .then(res => res.json())
+      .then(data => {
+        setServices(data);
+      })
+      .catch(error => console.error('Error fetching services:', error));
   }, []);
 
   const handleFollowBot = () => {
@@ -55,6 +77,10 @@ export const FeedsPage = () => {
     setExpandedOfferId(prevId => (prevId === offerId ? null : offerId));
   };
 
+  const handleServiceToggle = (serviceId: string) => {
+    setExpandedServiceId(prevId => (prevId === serviceId ? null : serviceId));
+  };
+
   const handleAccept = (offerId: string) => {
     alert(`✅ Accepted offer with ID: ${offerId}`);
     // You can add logic to send accept to backend
@@ -63,6 +89,16 @@ export const FeedsPage = () => {
   const handleDecline = (offerId: string) => {
     alert(`❌ Declined offer with ID: ${offerId}`);
     // You can add logic to send decline to backend
+  };
+
+  const handleContactFreelancer = (serviceId: string) => {
+    alert(`📧 Contacting freelancer for service: ${serviceId}`);
+    // You can add logic to contact freelancer
+  };
+
+  const handleBookService = (serviceId: string) => {
+    alert(`📅 Booking service: ${serviceId}`);
+    // You can add logic to book service
   };
   
   return (
@@ -254,47 +290,82 @@ export const FeedsPage = () => {
         
         {type == "freelancer" && (     
             <div style={{
-              position: "relative",
+              display: "flex",
+              gap: "10px",
               marginBottom: "15px",
             }}>
-              <input
-                type="text"
-                placeholder="Search for jobs, skills, or companies..."
-                style={{
-                  width: "100%",
-                  padding: "15px 20px",
-                  paddingRight: "50px",
-                  borderRadius: "25px",
-                  border: "2px solid #e0e0e0",
-                  fontSize: "16px",
-                  fontFamily: "'Arial', sans-serif",
-                  boxSizing: "border-box",
-                  outline: "none",
-                  transition: "border-color 0.3s ease",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "#06C755";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e0e0e0";
-                }}
-              />
               <div style={{
-                position: "absolute",
-                right: "15px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#06C755",
-                fontSize: "18px",
-                fontWeight: "bold",
+                position: "relative",
+                flex: 1,
               }}>
-                🔍
+                <input
+                  type="text"
+                  placeholder="Search for jobs, skills, or companies..."
+                  style={{
+                    width: "100%",
+                    padding: "15px 20px",
+                    paddingRight: "50px",
+                    borderRadius: "25px",
+                    border: "2px solid #e0e0e0",
+                    fontSize: "16px",
+                    fontFamily: "'Arial', sans-serif",
+                    boxSizing: "border-box",
+                    outline: "none",
+                    transition: "border-color 0.3s ease",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "#06C755";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "#e0e0e0";
+                  }}
+                />
+                <div style={{
+                  position: "absolute",
+                  right: "15px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#06C755",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}>
+                  🔍
+                </div>
               </div>
+              
+              <button
+                onClick={() => navigate("/create-service")}
+                style={{
+                  backgroundColor: "#06C755",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "55px",
+                  height: "55px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                  color: "white",
+                  boxShadow: "0 4px 12px rgba(6, 199, 85, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#05a847";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#06C755";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                title="Create Service"
+              >
+                +
+              </button>
             </div>   
-
         )}
 
-        {/* Available Offers */}
+        {/* Available Offers or Services */}
         <div style={{
           // backgroundColor: "#f8f9fa",
           // padding: "20px",
@@ -308,10 +379,180 @@ export const FeedsPage = () => {
             marginBottom: "15px",
             // textAlign: "center",
           }}>
-            {type === "employer" ? "Your Offers" : "Available Offers"}
+            {type === "employer" ? "Available Services" : "Available Offers"}
           </h3>
           
-          {offers.length > 0 ? (
+          {/* Show Services for Employers */}
+          {type === "employer" && services.length > 0 ? (
+            <div style={{
+              maxHeight: "60vh",
+              overflowY: "auto",
+              marginBottom: "20px",
+            }}>
+              {services.map((service) => {
+                const isExpanded = expandedServiceId === service.id;
+                const shortDesc = service.description.slice(0, 120);
+
+                return (
+                  <div
+                    key={service.id}
+                    style={{
+                      background: "#fff",
+                      border: "1px solid #ddd",
+                      borderRadius: "12px",
+                      padding: "20px",
+                      marginBottom: "15px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    <div>
+                      <h2 style={{ 
+                        marginBottom: "10px", 
+                        fontSize: "18px",
+                        color: "#06C755"
+                      }}>
+                        {service.title}
+                      </h2>
+                      <p style={{ 
+                        margin: "5px 0",
+                        fontSize: "14px",
+                        fontWeight: "bold"
+                      }}>
+                        Price: {service.price}
+                      </p>
+                      <p style={{ 
+                        margin: "5px 0",
+                        fontSize: "12px",
+                        color: "#666"
+                      }}>
+                        Category: {service.category}
+                      </p>
+                    </div>
+
+                    <div style={{
+                      fontSize: "15px",
+                      lineHeight: 1.5,
+                      color: "#444",
+                      margin: "15px 0",
+                    }}>
+                      <p>{isExpanded ? service.description : shortDesc + "..."}</p>
+                      
+                      {isExpanded && service.skills && service.skills.length > 0 && (
+                        <div style={{ marginTop: "15px" }}>
+                          <h4 style={{ 
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            color: "#333",
+                            marginBottom: "5px"
+                          }}>
+                            Skills:
+                          </h4>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                            {service.skills.map((skill, index) => (
+                              <span
+                                key={index}
+                                style={{
+                                  backgroundColor: "#06C755",
+                                  color: "white",
+                                  padding: "4px 8px",
+                                  borderRadius: "12px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => handleServiceToggle(service.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#06C755",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          padding: "5px 0",
+                          marginTop: "10px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {isExpanded ? "Show Less" : "Read More"}
+                      </button>
+                    </div>
+
+                    {/* Action buttons for employers viewing services */}
+                    <div style={{
+                      marginTop: "15px",
+                      display: "flex",
+                      gap: "15px",
+                      justifyContent: "center",
+                    }}>
+                      <button
+                        onClick={() => handleContactFreelancer(service.id)}
+                        style={{
+                          padding: "10px 20px",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "white",
+                          backgroundColor: "#007bff",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#0056b3";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "#007bff";
+                        }}
+                      >
+                        Contact
+                      </button>
+                      <button
+                        onClick={() => handleBookService(service.id)}
+                        style={{
+                          padding: "10px 20px",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "white",
+                          backgroundColor: "#06C755",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#05a847";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "#06C755";
+                        }}
+                      >
+                        Book Service
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : type === "employer" && services.length === 0 ? (
+            <div style={{
+              textAlign: "center",
+              color: "#666",
+              fontSize: "16px",
+              fontStyle: "italic",
+              padding: "40px 20px",
+            }}>
+              No services available yet.
+            </div>
+          ) : null}
+
+          {/* Show Offers for Freelancers */}
+          {type === "freelancer" && offers.length > 0 ? (
             <div style={{
               maxHeight: "60vh",
               overflowY: "auto",
@@ -414,81 +655,63 @@ export const FeedsPage = () => {
                       </button>
                     </div>
 
-                    {/* Action buttons - only show for freelancers */}
-                    {type === "freelancer" && (
-                      <div style={{
-                        marginTop: "15px",
-                        display: "flex",
-                        gap: "15px",
-                        justifyContent: "center",
-                      }}>
-                        <button
-                          onClick={() => handleAccept(offer.id)}
-                          style={{
-                            padding: "10px 20px",
-                            border: "none",
-                            borderRadius: "8px",
-                            fontSize: "14px",
-                            color: "white",
-                            backgroundColor: "#06C755",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            transition: "background-color 0.3s ease",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = "#05a847";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = "#06C755";
-                          }}
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => handleDecline(offer.id)}
-                          style={{
-                            padding: "10px 20px",
-                            border: "none",
-                            borderRadius: "8px",
-                            fontSize: "14px",
-                            color: "white",
-                            backgroundColor: "#dc3545",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            transition: "background-color 0.3s ease",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = "#c82333";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = "#dc3545";
-                          }}
-                        >
-                          Decline
-                        </button>
-                      </div>
-                    )}
-                    
-                    {/* For employers, show a different message */}
-                    {type === "employer" && (
-                      <div style={{
-                        marginTop: "15px",
-                        padding: "10px",
-                        backgroundColor: "#f8f9fa",
-                        borderRadius: "8px",
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#666",
-                        fontStyle: "italic",
-                      }}>
-                        This is one of your posted offers
-                      </div>
-                    )}
+                    {/* Action buttons - only show for freelancers viewing offers */}
+                    <div style={{
+                      marginTop: "15px",
+                      display: "flex",
+                      gap: "15px",
+                      justifyContent: "center",
+                    }}>
+                      <button
+                        onClick={() => handleAccept(offer.id)}
+                        style={{
+                          padding: "10px 20px",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "white",
+                          backgroundColor: "#06C755",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#05a847";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "#06C755";
+                        }}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => handleDecline(offer.id)}
+                        style={{
+                          padding: "10px 20px",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          color: "white",
+                          backgroundColor: "#dc3545",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s ease",
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = "#c82333";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = "#dc3545";
+                        }}
+                      >
+                        Decline
+                      </button>
+                    </div>
                   </div>
                 );
               })}
             </div>
-          ) : (
+          ) : type === "freelancer" && offers.length === 0 ? (
             <div style={{
               textAlign: "center",
               color: "#666",
@@ -496,28 +719,9 @@ export const FeedsPage = () => {
               fontStyle: "italic",
               padding: "40px 20px",
             }}>
-              No {type === "employer" ? "offers" : "offers"} available yet.
-              {type === "employer" && (
-                <div style={{ marginTop: "15px" }}>
-                  <button
-                    onClick={() => navigate("/create-job")}
-                    style={{
-                      backgroundColor: "#06C755",
-                      color: "white",
-                      border: "none",
-                      padding: "10px 20px",
-                      borderRadius: "20px",
-                      fontSize: "14px",
-                      cursor: "pointer",
-                      fontFamily: "'Arial', sans-serif",
-                    }}
-                  >
-                    Create Your First Offer
-                  </button>
-                </div>
-              )}
+              No offers available yet.
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
