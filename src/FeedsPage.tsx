@@ -673,7 +673,7 @@ export const FeedsPage = () => {
                           color: "#06C755",
                           cursor: "pointer",
                           fontSize: "14px",
-                          padding: "5px 0",
+                          paddingLeft: "5px",
                           marginTop: "10px",
                           fontWeight: "600",
                         }}
@@ -807,7 +807,6 @@ export const FeedsPage = () => {
 
                     <div style={{
                       fontSize: "15px",
-                      lineHeight: 1.5,
                       color: "#444",
                       margin: "15px 0",
                     }}>
@@ -853,7 +852,7 @@ export const FeedsPage = () => {
                           color: "#06C755",
                           cursor: "pointer",
                           fontSize: "14px",
-                          padding: "5px 0",
+                          paddingLeft: "5px",
                           fontWeight: "600",
                         }}
                       >

@@ -186,7 +186,7 @@ function CreateServicePage() {
               type="text"
               value={serviceData.title}
               onChange={(e) => handleInputChange("title", e.target.value)}
-              placeholder="e.g., Professional Logo Design, Website Development"
+              placeholder="e.g., Professional Logo Design"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -259,7 +259,7 @@ function CreateServicePage() {
               type="text"
               value={serviceData.budget}
               onChange={(e) => handleInputChange("budget", e.target.value)}
-              placeholder="e.g., $50, ¥5000, Starting from $100"
+              placeholder="e.g., $50, $100"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -343,7 +343,7 @@ function CreateServicePage() {
               type="text"
               value={serviceData.skills}
               onChange={(e) => handleInputChange("skills", e.target.value)}
-              placeholder="e.g., React, JavaScript, Figma, Adobe Photoshop (comma separated)"
+              placeholder="e.g., JavaScript, Figma"
               style={{
                 width: "100%",
                 padding: "15px",
@@ -456,7 +456,7 @@ function CreateServicePage() {
               type="text"
               value={serviceData.duration}
               onChange={(e) => handleInputChange("duration", e.target.value)}
-              placeholder="e.g., 1-3 days, 1 week, 2-4 weeks"
+              placeholder="e.g., 1 week, 2-4 weeks"
               style={{
                 width: "100%",
                 padding: "15px",
