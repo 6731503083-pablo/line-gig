@@ -45,11 +45,8 @@ export const FeedsPage = () => {
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
   useEffect(() => {
-    // Check if user has already followed the bot
-    const hasFollowedBot = localStorage.getItem("hasFollowedBot");
-    if (!hasFollowedBot) {
-      setShowBotDialog(true);
-    }
+    // Always show bot dialog at start
+    setShowBotDialog(true);
 
     fetchData();
   }, [type]);
@@ -186,10 +183,10 @@ export const FeedsPage = () => {
     }
   };
 
-  const handleContactFreelancer = (serviceId: string) => {
-    alert(`📧 Contacting freelancer for service: ${serviceId}`);
-    // You can add logic to contact freelancer
-  };
+  // const handleContactFreelancer = (serviceId: string) => {
+  //   alert(`📧 Contacting freelancer for service: ${serviceId}`);
+  //   // You can add logic to contact freelancer
+  // };
 
   const handleBookService = (serviceId: string) => {
     alert(`📅 Booking service: ${serviceId}`);
@@ -677,7 +674,7 @@ export const FeedsPage = () => {
                       gap: "15px",
                       justifyContent: "center",
                     }}>
-                      <button
+                      {/* <button
                         onClick={() => handleContactFreelancer(service.id)}
                         style={{
                           padding: "10px 20px",
@@ -698,7 +695,7 @@ export const FeedsPage = () => {
                         }}
                       >
                         Contact
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => handleBookService(service.id)}
                         style={{
