@@ -314,11 +314,11 @@ function CreateServicePage() {
               <option value="Design">Design</option>
               <option value="Writing">Writing</option>
               <option value="Marketing">Marketing</option>
-              <option value="Data Science">Data Science</option>
-              <option value="Consulting">Consulting</option>
-              <option value="Translation">Translation</option>
-              <option value="Video & Animation">Video & Animation</option>
-              <option value="Music & Audio">Music & Audio</option>
+              <option value="Wiring">Wiring</option>
+              <option value="Plumbing">Plumbing</option>
+              <option value="House Keeping">House Keeping</option>
+              <option value="Home moving">Home moving</option>
+              <option value="Gardening">Gardening</option>
               <option value="Other">Other</option>
             </select>
           </div>
