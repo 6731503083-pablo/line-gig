@@ -5,10 +5,12 @@ import liff from "@line/liff";
 interface ServiceData {
   title: string;
   description: string;
-  price: string;
+  budget: string;
   category: string;
   skills: string;
-  deliveryTime: string;
+  duration: string;
+  location: string;
+  urgency: string;
 }
 
 function CreateServicePage() {
@@ -16,10 +18,12 @@ function CreateServicePage() {
   const [serviceData, setServiceData] = useState<ServiceData>({
     title: "",
     description: "",
-    price: "",
+    budget: "",
     category: "",
     skills: "",
-    deliveryTime: "",
+    duration: "",
+    location: "",
+    urgency: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [freelancerData, setFreelancerData] = useState<any>(null);
@@ -54,8 +58,8 @@ function CreateServicePage() {
 
   const handleSubmit = async () => {
     // Validate required fields
-    if (!serviceData.title || !serviceData.description || !serviceData.price) {
-      alert("Please fill in all required fields (Title, Description, Price)");
+    if (!serviceData.title || !serviceData.description || !serviceData.budget) {
+      alert("Please fill in all required fields (Title, Description, Budget)");
       return;
     }
 
@@ -76,12 +80,13 @@ function CreateServicePage() {
         body: JSON.stringify({
           title: serviceData.title,
           description: serviceData.description,
-          price: serviceData.price,
+          budget: serviceData.budget,
           freelancerId: freelancerData.lineId,
           category: serviceData.category || "General",
           skills: serviceData.skills ? serviceData.skills.split(",").map(skill => skill.trim()) : [],
-          deliveryTime: serviceData.deliveryTime || "",
-          status: "active"
+          duration: serviceData.duration || "",
+          location: serviceData.location || "",
+          urgency: serviceData.urgency || "",
         }),
       });
 
@@ -239,7 +244,7 @@ function CreateServicePage() {
             />
           </div>
 
-          {/* Price */}
+          {/* Budget */}
           <div style={{ marginBottom: "25px" }}>
             <label style={{ 
               display: "block", 
@@ -248,12 +253,12 @@ function CreateServicePage() {
               color: "#333",
               fontSize: "16px"
             }}>
-              Price *
+              Budget *
             </label>
             <input
               type="text"
-              value={serviceData.price}
-              onChange={(e) => handleInputChange("price", e.target.value)}
+              value={serviceData.budget}
+              onChange={(e) => handleInputChange("budget", e.target.value)}
               placeholder="e.g., $50, ¥5000, Starting from $100"
               style={{
                 width: "100%",
@@ -359,7 +364,84 @@ function CreateServicePage() {
             />
           </div>
 
-          {/* Delivery Time */}
+          {/* Location */}
+          <div style={{ marginBottom: "25px" }}>
+            <label style={{ 
+              display: "block", 
+              marginBottom: "8px", 
+              fontWeight: "bold",
+              color: "#333",
+              fontSize: "16px"
+            }}>
+              Location
+            </label>
+            <input
+              type="text"
+              value={serviceData.location}
+              onChange={(e) => handleInputChange("location", e.target.value)}
+              placeholder="e.g., Remote, Tokyo, New York, Worldwide"
+              style={{
+                width: "100%",
+                padding: "15px",
+                borderRadius: "10px",
+                border: "2px solid #e0e0e0",
+                fontSize: "16px",
+                fontFamily: "'Arial', sans-serif",
+                boxSizing: "border-box",
+                outline: "none",
+                transition: "border-color 0.3s ease",
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "#06C755";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "#e0e0e0";
+              }}
+            />
+          </div>
+
+          {/* Urgency */}
+          <div style={{ marginBottom: "25px" }}>
+            <label style={{ 
+              display: "block", 
+              marginBottom: "8px", 
+              fontWeight: "bold",
+              color: "#333",
+              fontSize: "16px"
+            }}>
+              Urgency
+            </label>
+            <select
+              value={serviceData.urgency}
+              onChange={(e) => handleInputChange("urgency", e.target.value)}
+              style={{
+                width: "100%",
+                padding: "15px",
+                borderRadius: "10px",
+                border: "2px solid #e0e0e0",
+                fontSize: "16px",
+                fontFamily: "'Arial', sans-serif",
+                boxSizing: "border-box",
+                outline: "none",
+                transition: "border-color 0.3s ease",
+                backgroundColor: "white",
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "#06C755";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "#e0e0e0";
+              }}
+            >
+              <option value="">Select urgency level</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+
+          {/* Duration */}
           <div style={{ marginBottom: "35px" }}>
             <label style={{ 
               display: "block", 
@@ -368,12 +450,12 @@ function CreateServicePage() {
               color: "#333",
               fontSize: "16px"
             }}>
-              Delivery Time
+              Duration
             </label>
             <input
               type="text"
-              value={serviceData.deliveryTime}
-              onChange={(e) => handleInputChange("deliveryTime", e.target.value)}
+              value={serviceData.duration}
+              onChange={(e) => handleInputChange("duration", e.target.value)}
               placeholder="e.g., 1-3 days, 1 week, 2-4 weeks"
               style={{
                 width: "100%",
@@ -437,7 +519,7 @@ function CreateServicePage() {
             color: "#666",
             fontStyle: "italic"
           }}>
-            * Required fields
+            * Required fields (Title, Description, Budget)
           </div>
         </div>
       </div>
