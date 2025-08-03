@@ -6,7 +6,7 @@ type Offer = {
   title: string;
   description: string;
   budget: string;
-  employerId: number;
+  employerId: string;
   requirements: string;
   deadline: string;
   status: string;

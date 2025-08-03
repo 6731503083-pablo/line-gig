@@ -45,7 +45,7 @@ function ProfilePage() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isTogglingRole, setIsTogglingRole] = useState(false);
+  // const [isTogglingRole, setIsTogglingRole] = useState(false);
   const [editData, setEditData] = useState({
     bio: "",
     skills: "",
@@ -107,69 +107,69 @@ function ProfilePage() {
     }
   };
 
-  // Delete current user profile
-  const deleteCurrentUser = async () => {
-    try {
-      const endpoint = userProfile.userType === "employer" 
-        ? `https://line-gig-api.vercel.app/api/employers/${userProfile.dbId}`
-        : `https://line-gig-api.vercel.app/api/freelancers/${userProfile.dbId}`;
+  // // Delete current user profile
+  // const deleteCurrentUser = async () => {
+  //   try {
+  //     const endpoint = userProfile.userType === "employer" 
+  //       ? `https://line-gig-api.vercel.app/api/employers/${userProfile.dbId}`
+  //       : `https://line-gig-api.vercel.app/api/freelancers/${userProfile.dbId}`;
       
-      const response = await fetch(endpoint, {
-        method: 'DELETE',
-      });
+  //     const response = await fetch(endpoint, {
+  //       method: 'DELETE',
+  //     });
 
-      return response.ok;
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      return false;
-    }
-  };
+  //     return response.ok;
+  //   } catch (error) {
+  //     console.error("Error deleting user:", error);
+  //     return false;
+  //   }
+  // };
 
-  // Create new user with toggled role
-  const createToggledUser = async (newUserType: "employer" | "freelancer") => {
-    try {
-      const endpoint = newUserType === "employer" 
-        ? "https://line-gig-api.vercel.app/api/employers"
-        : "https://line-gig-api.vercel.app/api/freelancers";
+  // // Create new user with toggled role
+  // const createToggledUser = async (newUserType: "employer" | "freelancer") => {
+  //   try {
+  //     const endpoint = newUserType === "employer" 
+  //       ? "https://line-gig-api.vercel.app/api/employers"
+  //       : "https://line-gig-api.vercel.app/api/freelancers";
 
-      const userData = newUserType === "employer" 
-        ? {
-            lineId: userProfile.profile?.userId,
-            bio: userProfile.bio || "New employer",
-            location: userProfile.location || "Not specified",
-            company: "Not specified",
-            industry: "Not specified",
-            budgetRange: "Not specified",
-            projectTypes: "Not specified",
-          }
-        : {
-            lineId: userProfile.profile?.userId,
-            bio: userProfile.bio || "New freelancer",
-            location: userProfile.location || "Not specified",
-            skills: userProfile.skills.length > 0 ? userProfile.skills : ["General"],
-            experience: userProfile.experience || "Entry level",
-            hourlyRate: userProfile.hourlyRate || "Negotiable",
-            availability: userProfile.availability || "Available",
-          };
+  //     const userData = newUserType === "employer" 
+  //       ? {
+  //           lineId: userProfile.profile?.userId,
+  //           bio: userProfile.bio || "New employer",
+  //           location: userProfile.location || "Not specified",
+  //           company: "Not specified",
+  //           industry: "Not specified",
+  //           budgetRange: "Not specified",
+  //           projectTypes: "Not specified",
+  //         }
+  //       : {
+  //           lineId: userProfile.profile?.userId,
+  //           bio: userProfile.bio || "New freelancer",
+  //           location: userProfile.location || "Not specified",
+  //           skills: userProfile.skills.length > 0 ? userProfile.skills : ["General"],
+  //           experience: userProfile.experience || "Entry level",
+  //           hourlyRate: userProfile.hourlyRate || "Negotiable",
+  //           availability: userProfile.availability || "Available",
+  //         };
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+  //     const response = await fetch(endpoint, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(userData),
+  //     });
 
-      if (response.ok) {
-        const newUser = await response.json();
-        return newUser;
-      }
-      return null;
-    } catch (error) {
-      console.error("Error creating new user:", error);
-      return null;
-    }
-  };
+  //     if (response.ok) {
+  //       const newUser = await response.json();
+  //       return newUser;
+  //     }
+  //     return null;
+  //   } catch (error) {
+  //     console.error("Error creating new user:", error);
+  //     return null;
+  //   }
+  // };
 
   useEffect(() => {
     const initProfile = async () => {
@@ -324,80 +324,80 @@ function ProfilePage() {
     setIsEditing(false);
   };
 
-  const handleToggleRole = async () => {
-    if (!userProfile.dbId || !userProfile.userType) {
-      alert("Unable to switch role. Please try again.");
-      return;
-    }
+  // const handleToggleRole = async () => {
+  //   if (!userProfile.dbId || !userProfile.userType) {
+  //     alert("Unable to switch role. Please try again.");
+  //     return;
+  //   }
 
-    const newUserType = userProfile.userType === "employer" ? "freelancer" : "employer";
-    const confirmMessage = `Are you sure you want to switch from ${userProfile.userType} to ${newUserType}? Your current profile data will be preserved where possible.`;
+  //   const newUserType = userProfile.userType === "employer" ? "freelancer" : "employer";
+  //   const confirmMessage = `Are you sure you want to switch from ${userProfile.userType} to ${newUserType}? Your current profile data will be preserved where possible.`;
     
-    if (!confirm(confirmMessage)) {
-      return;
-    }
+  //   if (!confirm(confirmMessage)) {
+  //     return;
+  //   }
 
-    setIsTogglingRole(true);
+  //   setIsTogglingRole(true);
 
-    try {
-      // Delete current user profile
-      const deleteSuccess = await deleteCurrentUser();
-      if (!deleteSuccess) {
-        alert("Failed to delete current profile. Please try again.");
-        setIsTogglingRole(false);
-        return;
-      }
+  //   try {
+  //     // Delete current user profile
+  //     const deleteSuccess = await deleteCurrentUser();
+  //     if (!deleteSuccess) {
+  //       alert("Failed to delete current profile. Please try again.");
+  //       setIsTogglingRole(false);
+  //       return;
+  //     }
 
-      // Create new user with toggled role
-      const newUser = await createToggledUser(newUserType);
-      if (!newUser) {
-        alert("Failed to create new profile. Please try again.");
-        setIsTogglingRole(false);
-        return;
-      }
+  //     // Create new user with toggled role
+  //     const newUser = await createToggledUser(newUserType);
+  //     if (!newUser) {
+  //       alert("Failed to create new profile. Please try again.");
+  //       setIsTogglingRole(false);
+  //       return;
+  //     }
 
-      // Update localStorage and state
-      localStorage.setItem("userType", newUserType);
+  //     // Update localStorage and state
+  //     localStorage.setItem("userType", newUserType);
       
-      // Update the user profile state with new data
-      setUserProfile(prev => ({
-        ...prev,
-        userType: newUserType,
-        dbId: newUser.id,
-        bio: newUser.bio || "",
-        skills: newUser.skills || [],
-        experience: newUser.experience || "",
-        location: newUser.location || "",
-        hourlyRate: newUser.hourlyRate || "",
-        availability: newUser.availability || "",
-        company: newUser.company || "",
-        industry: newUser.industry || "",
-        budgetRange: newUser.budgetRange || "",
-        projectTypes: newUser.projectTypes || "",
-      }));
+  //     // Update the user profile state with new data
+  //     setUserProfile(prev => ({
+  //       ...prev,
+  //       userType: newUserType,
+  //       dbId: newUser.id,
+  //       bio: newUser.bio || "",
+  //       skills: newUser.skills || [],
+  //       experience: newUser.experience || "",
+  //       location: newUser.location || "",
+  //       hourlyRate: newUser.hourlyRate || "",
+  //       availability: newUser.availability || "",
+  //       company: newUser.company || "",
+  //       industry: newUser.industry || "",
+  //       budgetRange: newUser.budgetRange || "",
+  //       projectTypes: newUser.projectTypes || "",
+  //     }));
 
-      // Update edit data as well
-      setEditData({
-        bio: newUser.bio || "",
-        skills: Array.isArray(newUser.skills) ? newUser.skills.join(", ") : (newUser.skills || ""),
-        experience: newUser.experience || "",
-        location: newUser.location || "",
-        hourlyRate: newUser.hourlyRate || "",
-        availability: newUser.availability || "",
-        company: newUser.company || "",
-        industry: newUser.industry || "",
-        budgetRange: newUser.budgetRange || "",
-        projectTypes: newUser.projectTypes || "",
-      });
+  //     // Update edit data as well
+  //     setEditData({
+  //       bio: newUser.bio || "",
+  //       skills: Array.isArray(newUser.skills) ? newUser.skills.join(", ") : (newUser.skills || ""),
+  //       experience: newUser.experience || "",
+  //       location: newUser.location || "",
+  //       hourlyRate: newUser.hourlyRate || "",
+  //       availability: newUser.availability || "",
+  //       company: newUser.company || "",
+  //       industry: newUser.industry || "",
+  //       budgetRange: newUser.budgetRange || "",
+  //       projectTypes: newUser.projectTypes || "",
+  //     });
 
-      alert(`Successfully switched to ${newUserType}!`);
-    } catch (error) {
-      console.error("Error toggling role:", error);
-      alert("Failed to switch role. Please try again.");
-    } finally {
-      setIsTogglingRole(false);
-    }
-  };
+  //     alert(`Successfully switched to ${newUserType}!`);
+  //   } catch (error) {
+  //     console.error("Error toggling role:", error);
+  //     alert("Failed to switch role. Please try again.");
+  //   } finally {
+  //     setIsTogglingRole(false);
+  //   }
+  // };
 
   const handleLogout = () => {
     liff.logout();
@@ -465,7 +465,7 @@ function ProfilePage() {
           Profile
         </h1>
         
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+        {/* <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
           <div style={{
             fontSize: "12px",
             opacity: 0.8,
@@ -474,7 +474,7 @@ function ProfilePage() {
             Switch Role
           </div>
           <button
-            onClick={handleToggleRole}
+            // onClick={handleToggleRole}
             disabled={isTogglingRole}
             style={{
               backgroundColor: isTogglingRole ? "#ccc" : "#fff",
@@ -509,7 +509,7 @@ function ProfilePage() {
                 : "→ Employer"
             }
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Profile Card */}

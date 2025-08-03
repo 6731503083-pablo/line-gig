@@ -75,7 +75,7 @@ function CreateJobPage() {
           title: offerData.title,
           description: offerData.description,
           budget: offerData.budget,
-          employerId: employerData.id,
+          employerId: employerData.lineId,
           requirements: offerData.requirements || "",
           deadline: offerData.deadline || "",
           status: "open"
