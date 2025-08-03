@@ -398,10 +398,10 @@ export const FeedsPage = () => {
                     key={service.id}
                     style={{
                       background: "#fff",
-                      border: "1px solid #ddd",
+                      border: "3px solid #ddd",
                       borderRadius: "12px",
-                      padding: "20px",
-                      marginBottom: "15px",
+                      padding: "8px",
+                      marginBottom: "8px",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                     }}
                   >
@@ -567,10 +567,10 @@ export const FeedsPage = () => {
                     key={offer.id}
                     style={{
                       background: "#fff",
-                      border: "1px solid #ddd",
+                      border: "3px solid #ddd",
                       borderRadius: "12px",
-                      padding: "20px",
-                      marginBottom: "15px",
+                      padding: "8px",
+                      marginBottom: "8px",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                     }}
                   >
@@ -586,7 +586,7 @@ export const FeedsPage = () => {
                       <p style={{ 
                         margin: "5px 0",
                         fontSize: "14px",
-                        fontWeight: "bold"
+                        fontWeight: "bold"//
                       }}>
                         Budget: {offer.budget}
                       </p>
