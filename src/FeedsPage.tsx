@@ -20,10 +20,13 @@ type Service = {
   id: string;
   title: string;
   description: string;
-  price: string;
+  budget: string;
   freelancerId: string;
   skills: string[];
   category: string;
+  duration: string;
+  location: string;
+  urgency: string;
   status: string;
   createdAt: string;
 };
@@ -62,7 +65,7 @@ export const FeedsPage = () => {
         if (type === "freelancer" && liff.isLoggedIn()) {
           try {
             const profile = await liff.getProfile();
-            const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
+            const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/api/accepted-offers/freelancer/${profile.userId}`);
             if (acceptedResponse.ok) {
               const acceptedOffers = await acceptedResponse.json();
               const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
@@ -146,8 +149,8 @@ export const FeedsPage = () => {
           setOffers(prevOffers => prevOffers.filter(offer => offer.id !== offerId));
           
           // Update the original offer status (optional)
-          await fetch(`https://line-gig-api.vercel.app/api/offers/${offerId}`, {
-            method: 'PUT',
+          await fetch(`https://line-gig-api.vercel.app/offers/${offerId}`, {
+            method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
             },
@@ -156,7 +159,14 @@ export const FeedsPage = () => {
 
           alert(`✅ Offer accepted successfully! Check your History page to see your accepted projects.`);
         } else {
-          alert("Failed to accept offer. Please try again.");
+          const errorData = await response.json();
+          console.error("Failed to accept offer:", errorData);
+          
+          if (response.status === 409) {
+            alert("This offer has already been accepted by you.");
+          } else {
+            alert("Failed to accept offer. Please try again.");
+          }
         }
       }
     } catch (error) {
@@ -594,29 +604,7 @@ export const FeedsPage = () => {
                           color: "#06C755",
                           fontWeight: "bold"
                         }}>
-                          Price: {service.price}
-                        </span>
-                      </div>
-                      <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginBottom: "10px"
-                      }}>
-                        <h2 style={{ 
-                          margin: 0, 
-                          fontSize: "18px",
-                          color: "#06C755",
-                          fontWeight: "bold"
-                        }}>
-                          {service.title}
-                        </h2>
-                        <span style={{
-                          fontSize: "15px",
-                          color: "#06C755",
-                          fontWeight: "bold"
-                        }}>
-                          ฿{service.price}
+                          ฿{service.budget}
                         </span>
                       </div>
                       <p style={{ 
