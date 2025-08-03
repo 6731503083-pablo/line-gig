@@ -36,6 +36,8 @@ export const FeedsPage = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [expandedOfferId, setExpandedOfferId] = useState<string | null>(null);
   const [expandedServiceId, setExpandedServiceId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const location = useLocation();
   const type = localStorage.getItem("userType") || (location.state as { type?: string })?.type;
 
@@ -46,48 +48,50 @@ export const FeedsPage = () => {
       setShowBotDialog(true);
     }
 
-    const fetchData = async () => {
-      try {
-        // Fetch offers from API
-        const offersResponse = await fetch('https://line-gig-api.vercel.app/offers');
-        if (offersResponse.ok) {
-          let offersData = await offersResponse.json();
-          
-          // If user is a freelancer, filter out already accepted offers
-          if (type === "freelancer" && liff.isLoggedIn()) {
-            try {
-              const profile = await liff.getProfile();
-              const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
-              if (acceptedResponse.ok) {
-                const acceptedOffers = await acceptedResponse.json();
-                const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
-                offersData = offersData.filter((offer: any) => !acceptedOfferIds.includes(offer.id));
-              }
-            } catch (error) {
-              console.error("Error filtering accepted offers:", error);
-            }
-          }
-          
-          setOffers(offersData);
-        }
-      } catch (error) {
-        console.error('Error fetching offers:', error);
-      }
-
-      try {
-        // Fetch services from API
-        const servicesResponse = await fetch('https://line-gig-api.vercel.app/services');
-        if (servicesResponse.ok) {
-          const servicesData = await servicesResponse.json();
-          setServices(servicesData);
-        }
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      }
-    };
-
     fetchData();
   }, [type]);
+
+  const fetchData = async () => {
+    try {
+      // Fetch offers from API
+      const offersResponse = await fetch('https://line-gig-api.vercel.app/offers');
+      if (offersResponse.ok) {
+        let offersData = await offersResponse.json();
+        
+        // If user is a freelancer, filter out already accepted offers
+        if (type === "freelancer" && liff.isLoggedIn()) {
+          try {
+            const profile = await liff.getProfile();
+            const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
+            if (acceptedResponse.ok) {
+              const acceptedOffers = await acceptedResponse.json();
+              const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
+              offersData = offersData.filter((offer: any) => !acceptedOfferIds.includes(offer.id));
+            }
+          } catch (error) {
+            console.error("Error filtering accepted offers:", error);
+          }
+        }
+        
+        setOffers(offersData);
+      }
+    } catch (error) {
+      console.error('Error fetching offers:', error);
+    }
+
+    try {
+      // Fetch services from API
+      const servicesResponse = await fetch('https://line-gig-api.vercel.app/services');
+      if (servicesResponse.ok) {
+        const servicesData = await servicesResponse.json();
+        setServices(servicesData);
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFollowBot = () => {
     // Open LINE bot link
@@ -183,43 +187,9 @@ export const FeedsPage = () => {
   };
 
   const handleRefresh = async () => {
-    try {
-      // Fetch offers from API
-      const offersResponse = await fetch('https://line-gig-api.vercel.app/offers');
-      if (offersResponse.ok) {
-        let offersData = await offersResponse.json();
-        
-        // If user is a freelancer, filter out already accepted offers
-        if (type === "freelancer" && liff.isLoggedIn()) {
-          try {
-            const profile = await liff.getProfile();
-            const acceptedResponse = await fetch(`https://line-gig-api.vercel.app/accepted-offers?freelancerId=${profile.userId}`);
-            if (acceptedResponse.ok) {
-              const acceptedOffers = await acceptedResponse.json();
-              const acceptedOfferIds = acceptedOffers.map((offer: any) => offer.id);
-              offersData = offersData.filter((offer: any) => !acceptedOfferIds.includes(offer.id));
-            }
-          } catch (error) {
-            console.error("Error filtering accepted offers:", error);
-          }
-        }
-        
-        setOffers(offersData);
-      }
-    } catch (error) {
-      console.error('Error fetching offers:', error);
-    }
-
-    try {
-      // Fetch services from API
-      const servicesResponse = await fetch('https://line-gig-api.vercel.app/services');
-      if (servicesResponse.ok) {
-        const servicesData = await servicesResponse.json();
-        setServices(servicesData);
-      }
-    } catch (error) {
-      console.error('Error fetching services:', error);
-    }
+    setIsRefreshing(true);
+    await fetchData();
+    setIsRefreshing(false);
   };
   
   return (
@@ -510,15 +480,16 @@ export const FeedsPage = () => {
             </h3>
             <button
               onClick={handleRefresh}
+              disabled={isRefreshing}
               style={{
-                backgroundColor: "#06C755",
+                backgroundColor: isRefreshing ? "#ccc" : "#06C755",
                 border: "none",
                 borderRadius: "20px",
                 padding: "8px 16px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                cursor: "pointer",
+                cursor: isRefreshing ? "not-allowed" : "pointer",
                 fontSize: "14px",
                 color: "white",
                 fontWeight: "600",
@@ -526,21 +497,62 @@ export const FeedsPage = () => {
                 transition: "all 0.3s ease",
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = "#05a847";
-                e.currentTarget.style.transform = "scale(1.05)";
+                if (!isRefreshing) {
+                  e.currentTarget.style.backgroundColor = "#05a847";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = "#06C755";
-                e.currentTarget.style.transform = "scale(1)";
+                if (!isRefreshing) {
+                  e.currentTarget.style.backgroundColor = "#06C755";
+                  e.currentTarget.style.transform = "scale(1)";
+                }
               }}
               title="Refresh data"
             >
-              🔄 Refresh
+              {isRefreshing ? "🔄 Refreshing..." : "🔄 Refresh"}
             </button>
           </div>
           
+          {/* Loading indicator for initial load */}
+          {isLoading && (
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "60px 20px",
+              textAlign: "center",
+            }}>
+              <div style={{
+                width: "50px",
+                height: "50px",
+                border: "4px solid #e0e0e0",
+                borderTop: "4px solid #06C755",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+                marginBottom: "20px",
+              }}></div>
+              <div style={{
+                fontSize: "16px",
+                color: "#666",
+                fontWeight: "500",
+              }}>
+                Loading {type === "employer" ? "services" : "offers"}...
+              </div>
+              <style dangerouslySetInnerHTML={{
+                __html: `
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `
+              }} />
+            </div>
+          )}
+          
           {/* Show Services for Employers */}
-          {type === "employer" && services.length > 0 ? (
+          {!isLoading && type === "employer" && services.length > 0 ? (
             <div style={{
               maxHeight: "60vh",
               overflowY: "auto",
@@ -726,7 +738,7 @@ export const FeedsPage = () => {
                 );
               })}
             </div>
-          ) : type === "employer" && services.length === 0 ? (
+          ) : !isLoading && type === "employer" && services.length === 0 ? (
             <div style={{
               textAlign: "center",
               color: "#666",
@@ -739,7 +751,7 @@ export const FeedsPage = () => {
           ) : null}
 
           {/* Show Offers for Freelancers */}
-          {type === "freelancer" && offers.length > 0 ? (
+          {!isLoading && type === "freelancer" && offers.length > 0 ? (
             <div style={{
               maxHeight: "60vh",
               overflowY: "auto",
@@ -905,7 +917,7 @@ export const FeedsPage = () => {
                 );
               })}
             </div>
-          ) : type === "freelancer" && offers.length === 0 ? (
+          ) : !isLoading && type === "freelancer" && offers.length === 0 ? (
             <div style={{
               textAlign: "center",
               color: "#666",
