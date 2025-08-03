@@ -201,16 +201,16 @@ export const FeedsPage = () => {
     }
   };
 
-  const handleDecline = async (offerId: string) => {
-    try {
-      // Simply remove from local state for now (you can add backend logic later)
-      setOffers(prevOffers => prevOffers.filter(offer => offer.id !== offerId));
-      alert(`❌ Offer declined and removed from your feed.`);
-    } catch (error) {
-      console.error("Error declining offer:", error);
-      alert("Failed to decline offer. Please try again.");
-    }
-  };
+  // const handleDecline = async (offerId: string) => {
+  //   try {
+  //     // Simply remove from local state for now (you can add backend logic later)
+  //     setOffers(prevOffers => prevOffers.filter(offer => offer.id !== offerId));
+  //     alert(`❌ Offer declined and removed from your feed.`);
+  //   } catch (error) {
+  //     console.error("Error declining offer:", error);
+  //     alert("Failed to decline offer. Please try again.");
+  //   }
+  // };
 
   // const handleContactFreelancer = (serviceId: string) => {
   //   alert(`📧 Contacting freelancer for service: ${serviceId}`);
@@ -1173,7 +1173,7 @@ export const FeedsPage = () => {
                       >
                         Accept
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => handleDecline(offer.id)}
                         style={{
                           padding: "10px 20px",
@@ -1194,7 +1194,7 @@ export const FeedsPage = () => {
                         }}
                       >
                         Decline
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 );
